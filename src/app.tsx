@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import { Button } from "./components/ui/button";
 
 const App = () => {
   return (
-    <div className='text-3xl'>App</div>
-  )
-}
+    <div className="text-3xl flex justify-center items-center">
+      <Button variant="destructive">tes</Button>
+    </div>
+  );
+};
 
-export default App
+export default App;

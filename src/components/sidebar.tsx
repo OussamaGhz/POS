@@ -11,7 +11,7 @@ const Sidebar = () => {
     return `flex items-center p-6 rounded-lg space-x-4 transition-colors delay-75 ${
       isActive 
         ? "bg-primary text-primary-foreground"
-        : "hover:bg-primary hover:text-primary-foreground text-gray-800 dark:text-gray-400"
+        : "hover:bg-gray-100 text-gray-800 dark:text-gray-400"
     }`;
   };
 

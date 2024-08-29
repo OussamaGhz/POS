@@ -1,6 +1,6 @@
 import Commandes from "../components/HomePage/commandes";
 import Historique from "../components/HomePage/hitorique";
-import { Button } from "../components/ui/button";
+import ProductSearch from "../components/HomePage/products";
 import React from "react";
 
 export default function Component() {
@@ -16,9 +16,8 @@ export default function Component() {
         </div>
       </div>
 
-      <div className="order-1 md:order-2 w-full md:w-1/3 bg-gray-200 p-4 rounded-lg">
-        <h2 className="text-xl font-semibold">Sidebar Content</h2>
-        <p>Some content for the sidebar.</p>
+      <div className="order-1 md:order-2 w-full md:w-1/3">
+        <ProductSearch />
       </div>
     </div>
   );

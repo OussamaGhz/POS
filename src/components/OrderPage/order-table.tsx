@@ -9,7 +9,8 @@ import {
   TableBody,
   TableCell,
 } from "@/src/components/ui/table";
-import { TrashIcon } from "lucide-react";
+import { Minus, Plus, TrashIcon } from "lucide-react";
+import { Input } from "../ui/input";
 
 type Row = {
   id: string;
@@ -17,6 +18,14 @@ type Row = {
   price: number;
   quantity: number;
   total: number;
+};
+
+const handleIncrease = (id: string) => {
+  // Logic to increase quantity
+};
+
+const handleDecrease = (id: string) => {
+  // Logic to decrease quantity
 };
 
 const OrderTable = () => {
@@ -55,13 +64,32 @@ const OrderTable = () => {
             <TableRow key={row.id}>
               <TableCell className="hidden md:table-cell">{row.name}</TableCell>
               <TableCell className="font-medium">{row.price}$</TableCell>
-              <TableCell>
-                <input type="text" value={row.quantity}/>
+              <TableCell className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleDecrease(row.id)}
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <Input
+                  type="text"
+                  value={row.quantity}
+                  className="w-20 text-center"
+                  readOnly
+                />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleIncrease(row.id)}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
               </TableCell>
               <TableCell>{row.total}$</TableCell>
               <TableCell className="hidden md:table-cell">
                 <Button
-                  variant="outline"
+                  variant="destructive"
                   size="icon"
                   onClick={() => {
                     alert("delete");

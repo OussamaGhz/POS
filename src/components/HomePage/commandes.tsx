@@ -25,7 +25,7 @@ const Commandes = () => {
               </span>
               <span>433$</span>
             </div>
-            <Button className="mt-4 md:mt-0 p-4 md:p-6 text-xl md:text-2xl font-semibold">
+            <Button className=" text-xl md:text-2xl font-semibold">
               Valider
             </Button>
           </div>

@@ -24,7 +24,7 @@ const StockPage = () => {
   );
 
   return (
-    <Card className="w-full h-full flex flex-col gap-4 p-4 shadow-lg rounded-lg">
+    <Card className="w-full h-full flex flex-col gap-4 p-4 ">
       <CardHeader>
         <CardTitle>Stock Page</CardTitle>
       </CardHeader>

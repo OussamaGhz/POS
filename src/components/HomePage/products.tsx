@@ -5,15 +5,14 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Search, List, ShoppingCart } from "lucide-react";
-// eslint-disable-next-line import/no-unresolved
 import { addProduct } from "@/src/store/cartSlice";
 import Product from "@/src/utils/types";
 
 const ProductSearch = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedFamily, setSelectedFamily] = useState("");
+  const [selectedFamily, setSelectedFamily] = useState("All");
   const dispatch = useDispatch();
-  const families = ["Fruits", "Vegetables", "Dairy", "Meat"];
+  const families = ["All", "Fruits", "Vegetables", "Dairy", "Meat"];
   const products = [
     { id: "1", name: "Apple", family: "Fruits", price: 1.0 },
     { id: "2", name: "Carrot", family: "Vegetables", price: 0.5 },
@@ -23,8 +22,8 @@ const ProductSearch = () => {
 
   const filteredProducts = products.filter(
     (product) =>
-      product.family === selectedFamily &&
-      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedFamily === "All" || product.family === selectedFamily)
   );
 
   const handleAddToCart = (product: Product) => {

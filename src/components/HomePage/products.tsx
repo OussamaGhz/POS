@@ -1,18 +1,24 @@
+/* eslint-disable import/no-unresolved */
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Search, List, ShoppingCart } from "lucide-react";
+// eslint-disable-next-line import/no-unresolved
+import { addProduct } from "@/src/store/cartSlice";
+import Product from "@/src/utils/types";
 
 const ProductSearch = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFamily, setSelectedFamily] = useState("");
+  const dispatch = useDispatch();
   const families = ["Fruits", "Vegetables", "Dairy", "Meat"];
   const products = [
-    { name: "Apple", family: "Fruits" },
-    { name: "Carrot", family: "Vegetables" },
-    { name: "Milk", family: "Dairy" },
-    { name: "Chicken", family: "Meat" },
+    { id: "1", name: "Apple", family: "Fruits", price: 1.0 },
+    { id: "2", name: "Carrot", family: "Vegetables", price: 0.5 },
+    { id: "3", name: "Milk", family: "Dairy", price: 1.5 },
+    { id: "4", name: "Chicken", family: "Meat", price: 5.0 },
   ];
 
   const filteredProducts = products.filter(
@@ -20,6 +26,16 @@ const ProductSearch = () => {
       product.family === selectedFamily &&
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleAddToCart = (product: Product) => {
+    dispatch(
+      addProduct({
+        ...product,
+        quantity: 1,
+        total: product.price,
+      })
+    );
+  };
 
   return (
     <Card className="w-full h-full flex flex-col gap-4 p-4">
@@ -60,8 +76,9 @@ const ProductSearch = () => {
           <div className="flex flex-col gap-2">
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
-                <div key={product.name} className="p-2 border rounded">
+                <div key={product.id} className="p-2 border rounded flex justify-between items-center">
                   {product.name}
+                  <Button onClick={() => handleAddToCart(product)}>Add to Cart</Button>
                 </div>
               ))
             ) : (

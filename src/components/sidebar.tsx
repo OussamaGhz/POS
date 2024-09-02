@@ -1,6 +1,7 @@
 import { ShoppingBasket, Warehouse, ChartArea } from "lucide-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import logo from "@/src/logo.png"
 
 
 const Sidebar = () => {
@@ -16,9 +17,9 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="w-64 bg-gradient-to-b from-white to-gray-100 dark:from-gray-800 dark:to-gray-700 h-screen">
-      <div className="h-16 flex items-center justify-center border-b-2">
-       Admin panel
+    <aside className="flex flex-col w-64 bg-gradient-to-b from-white to-gray-100 dark:from-gray-800 dark:to-gray-700 h-screen">
+      <div className="h-16 flex items-center justify-center border-b-2 my-7">
+       <img src={logo} alt="logo" />
       </div>
       <ul className="flex flex-col gap-2">
         <Link to="/" className={getLinkClasses("/")}>

@@ -10,6 +10,19 @@ rules.push({
   use: [{ loader: 'style-loader' }, { loader: 'css-loader' }, { loader: 'postcss-loader' }],
 });
 
+// Add a rule for processing image files
+rules.push({
+  test: /\.(png|jpe?g|gif|svg)$/i,
+  use: [
+    {
+      loader: 'file-loader',
+      options: {
+        name: '[path][name].[ext]',
+      },
+    },
+  ],
+});
+
 export const rendererConfig: Configuration = {
   module: {
     rules,

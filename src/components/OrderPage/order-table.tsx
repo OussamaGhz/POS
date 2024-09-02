@@ -35,7 +35,7 @@ const OrderTable = () => {
           {products.map((product) => (
             <TableRow key={product.id}>
               <TableCell className="hidden md:table-cell">{product.name}</TableCell>
-              <TableCell className="font-medium">{product.price}$</TableCell>
+              <TableCell className="font-medium">{product.price}DA</TableCell>
               <TableCell className="flex items-center gap-2">
                 <Button
                   variant="outline"
@@ -58,7 +58,7 @@ const OrderTable = () => {
                   <Plus className="h-4 w-4" />
                 </Button>
               </TableCell>
-              <TableCell>{product.total}$</TableCell>
+              <TableCell>{product.total}DA</TableCell>
               <TableCell className="hidden md:table-cell">
                 <Button
                   variant="destructive"

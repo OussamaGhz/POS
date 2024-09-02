@@ -10,10 +10,52 @@ import SearchBar from "../components/StockPage/search-bar";
 import AddProductDialog from "../components/StockPage/product-dialog";
 
 const products = [
-  { id: "1", name: "Apple", amount: 50, price: 1.2, family: "Fruits" },
-  { id: "2", name: "Carrot", amount: 30, price: 0.8, family: "Vegetables" },
-  { id: "3", name: "Milk", amount: 20, price: 1.5, family: "Dairy" },
-  { id: "4", name: "Chicken", amount: 15, price: 5.0, family: "Meat" },
+  { id: "1", name: "Nutella Crepe", family: "Crepes", price: 300, amount: 50 },
+  {
+    id: "2",
+    name: "Strawberry Crepe",
+    family: "Crepes",
+    price: 350,
+    amount: 30,
+  },
+  {
+    id: "3",
+    name: "Vanilla Gelato",
+    family: "Glace gelato",
+    price: 250,
+    amount: 20,
+  },
+  {
+    id: "4",
+    name: "Chocolate Gelato",
+    family: "Glace gelato",
+    price: 250,
+    amount: 15,
+  },
+  {
+    id: "5",
+    name: "Soft Serve Ice Cream",
+    family: "Glace machine",
+    price: 200,
+    amount: 25,
+  },
+  {
+    id: "6",
+    name: "Frozen Yogurt",
+    family: "Glace machine",
+    price: 200,
+    amount: 10,
+  },
+  { id: "7", name: "Orange Juice", family: "Jus", price: 150, amount: 40 },
+  { id: "8", name: "Apple Juice", family: "Jus", price: 150, amount: 35 },
+  { id: "9", name: "Classic Gofre", family: "Gofres", price: 400, amount: 20 },
+  {
+    id: "10",
+    name: "Chocolate Gofre",
+    family: "Gofres",
+    price: 450,
+    amount: 15,
+  },
 ];
 
 const StockPage = () => {

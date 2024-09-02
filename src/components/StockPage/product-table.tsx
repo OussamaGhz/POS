@@ -32,7 +32,7 @@ const ProductTable = ({ products }: { products: Product[] }) => {
           <TableRow key={product.id}>
             <TableCell>{product.name}</TableCell>
             <TableCell>{product.amount}</TableCell>
-            <TableCell>{product.price}$</TableCell>
+            <TableCell>{product.price}DA</TableCell>
             <TableCell>{product.family}</TableCell>
           </TableRow>
         ))}

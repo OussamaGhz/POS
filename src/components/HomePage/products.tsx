@@ -12,12 +12,18 @@ const ProductSearch = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFamily, setSelectedFamily] = useState("All");
   const dispatch = useDispatch();
-  const families = ["All", "Fruits", "Vegetables", "Dairy", "Meat"];
+  const families = ["All", "Crepes", "Glace gelato", "Glace machine", "Jus", "Gofres"];
   const products = [
-    { id: "1", name: "Apple", family: "Fruits", price: 1.0 },
-    { id: "2", name: "Carrot", family: "Vegetables", price: 0.5 },
-    { id: "3", name: "Milk", family: "Dairy", price: 1.5 },
-    { id: "4", name: "Chicken", family: "Meat", price: 5.0 },
+    { id: "1", name: "Nutella Crepe", family: "Crepes", price: 300 },
+    { id: "2", name: "Strawberry Crepe", family: "Crepes", price: 350 },
+    { id: "3", name: "Vanilla Gelato", family: "Glace gelato", price: 250 },
+    { id: "4", name: "Chocolate Gelato", family: "Glace gelato", price: 250 },
+    { id: "5", name: "Soft Serve Ice Cream", family: "Glace machine", price: 200 },
+    { id: "6", name: "Frozen Yogurt", family: "Glace machine", price: 200 },
+    { id: "7", name: "Orange Juice", family: "Jus", price: 150 },
+    { id: "8", name: "Apple Juice", family: "Jus", price: 150 },
+    { id: "9", name: "Classic Gofre", family: "Gofres", price: 400 },
+    { id: "10", name: "Chocolate Gofre", family: "Gofres", price: 450 },
   ];
 
   const filteredProducts = products.filter(
@@ -37,7 +43,7 @@ const ProductSearch = () => {
   };
 
   return (
-    <Card className="w-full h-full flex flex-col gap-4 p-4">
+    <Card className="w-full h-full flex flex-col gap-4 p-4 overflow-auto">
       <CardHeader>
         <CardTitle>Product Search</CardTitle>
       </CardHeader>
@@ -76,7 +82,7 @@ const ProductSearch = () => {
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <div key={product.id} className="p-2 border rounded flex justify-between items-center">
-                  {product.name}
+                  {product.name} - {product.price} DA
                   <Button onClick={() => handleAddToCart(product)}>Add to Cart</Button>
                 </div>
               ))

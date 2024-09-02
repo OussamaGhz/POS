@@ -15,7 +15,7 @@ const Total = () => {
         <span className="text-right flex justify-center items-center">
           Total:
         </span>
-        <span>{totalCost}$</span>
+        <span>{totalCost}DA</span>
       </div>
     </div>
   );

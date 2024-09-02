@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+import HistoriqueAll from "../components/statsPage/historique-all";
 
 const StatsPage = () => {
   return (
@@ -45,7 +46,7 @@ const StatsPage = () => {
           <LineChartComponent />
         </CardContent>
       </Card>
-      <Historique />
+      <HistoriqueAll />
     </div>
   );
 };

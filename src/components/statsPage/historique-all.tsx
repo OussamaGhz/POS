@@ -18,7 +18,7 @@ type Transaction = {
   date: string;
 };
 
-const Historique = () => {
+const HistoriqueAll = () => {
   const transactions: Transaction[] = [
     {
       id: "1",
@@ -47,9 +47,6 @@ const Historique = () => {
     <Card className="">
       <CardHeader className="flex justify-between flex-row">
         <CardTitle>Historique</CardTitle>
-        <Link to={"/stats"}>
-          <Button variant="link">See all</Button>
-        </Link>
       </CardHeader>
       <CardContent className="flex-col h-full">
         <Table className="">
@@ -79,4 +76,4 @@ const Historique = () => {
   );
 };
 
-export default Historique;
+export default HistoriqueAll;

@@ -83,7 +83,7 @@ const ProductSearch = () => {
               filteredProducts.map((product) => (
                 <div key={product.id} className="p-2 border rounded flex justify-between items-center">
                   {product.name} - {product.price} DA
-                  <Button onClick={() => handleAddToCart(product)}>Add to Cart</Button>
+                  <Button onClick={() => handleAddToCart({ ...product, quantity: 1, total: product.price })}>Add to Cart</Button>
                 </div>
               ))
             ) : (

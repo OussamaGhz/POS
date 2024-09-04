@@ -1,12 +1,13 @@
-// src/App.tsx
-import React from 'react';
-import { createHashRouter, RouterProvider } from 'react-router-dom';
-import Layout from './layouts/route-layout';
-import HomePage from './pages/HomePage';
-import StatsPage from './pages/StatsPage';
-import StockPage from './pages/StockPage';
+import React from "react";
+import { createHashRouter, RouterProvider } from "react-router-dom";
+import Layout from "./layouts/route-layout";
+import HomePage from "./pages/HomePage";
+import StatsPage from "./pages/StatsPage";
+import StockPage from "./pages/StockPage";
 
 function App() {
+  
+
   // Define the router with routes
   const router = createHashRouter([
     {

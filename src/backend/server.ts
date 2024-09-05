@@ -103,10 +103,6 @@ app.delete('/products/:id', async (req, res) => {
   }
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
 
 export const startServer = () => {
   app.listen(PORT, () => {

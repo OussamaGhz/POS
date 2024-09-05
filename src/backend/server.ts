@@ -5,10 +5,12 @@ import path from 'path';
 const app = express();
 const PORT = 8000;
 
+const DB_DIRNAME = "src/backend"; 
+
 // Create Sequelize instance
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: path.resolve(__dirname, 'database.sqlite')
+  storage: path.resolve(DB_DIRNAME, 'database.sqlite')
 });
 
 // Define Product model

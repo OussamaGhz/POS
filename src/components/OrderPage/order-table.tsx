@@ -24,25 +24,26 @@ const OrderTable = () => {
       <Table className="">
         <TableHeader className="font-bold">
           <TableRow>
-            <TableHead className="w-[80px] hidden md:table-cell">Item</TableHead>
-            <TableHead className="max-w-[150px]">Price</TableHead>
-            <TableHead>Quantity</TableHead>
-            <TableHead>Total</TableHead>
-            <TableHead />
+            <TableHead className="w-[100px]">Item</TableHead>
+            <TableHead className="w-[50px]">Price</TableHead>
+            <TableHead className="w-[50px]">Quantity</TableHead>
+            <TableHead className="w-[100px] text-center">Total</TableHead>
+            <TableHead className="w-[25px]" />
           </TableRow>
         </TableHeader>
         <TableBody>
           {products.map((product) => (
             <TableRow key={product.id}>
-              <TableCell className="hidden md:table-cell">{product.name}</TableCell>
-              <TableCell className="font-medium">{product.price}DA</TableCell>
-              <TableCell className="flex items-center gap-2">
+              <TableCell className="w-[100px]">{product.name}</TableCell>
+              <TableCell className="w-[50px] font-medium">{product.price}DA</TableCell>
+              <TableCell className="w-[50px] flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="icon"
+                  className="h-8 w-10"
                   onClick={() => dispatch(decrementQuantity(product.id))}
                 >
-                  <Minus className="h-4 w-4" />
+                  <Minus className="h-6 w-8" />
                 </Button>
                 <Input
                   type="text"
@@ -53,13 +54,14 @@ const OrderTable = () => {
                 <Button
                   variant="outline"
                   size="icon"
+                  className="h-8 w-8"
                   onClick={() => dispatch(incrementQuantity(product.id))}
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-6 w-8" />
                 </Button>
               </TableCell>
-              <TableCell>{product.total}DA</TableCell>
-              <TableCell className="hidden md:table-cell">
+              <TableCell className="w-[100px] text-center">{product.total}DA</TableCell>
+              <TableCell className="w-[25px] hidden md:table-cell">
                 <Button
                   variant="destructive"
                   size="icon"

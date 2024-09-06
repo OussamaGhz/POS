@@ -43,7 +43,7 @@ const ProductSearch = () => {
   };
 
   return (
-    <Card className="w-full h-full flex flex-col gap-4 p-4 overflow-auto">
+    <Card className="w-full h-full flex flex-col gap-4 py-2 overflow-auto">
       <CardHeader>
         <CardTitle>Product Search</CardTitle>
       </CardHeader>

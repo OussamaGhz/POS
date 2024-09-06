@@ -1,33 +1,37 @@
 import express from 'express';
-import { Sequelize, Model, DataTypes } from 'sequelize';
+import sqlite3 from 'sqlite3';
 import path from 'path';
 
 const app = express();
 const PORT = 8000;
 
 const DB_DIRNAME = "src/backend"; 
+const DB_PATH = path.resolve(DB_DIRNAME, 'database.sqlite');
 
-// Create Sequelize instance
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: path.resolve(DB_DIRNAME, 'database.sqlite')
+// Create SQLite database instance
+const db = new sqlite3.Database(DB_PATH, (err) => {
+  if (err) {
+    console.error('Failed to connect to the database:', err);
+  } else {
+    console.log('Connected to the SQLite database.');
+  }
 });
 
-// Define Product model
-class Product extends Model {}
-Product.init({
-  name: DataTypes.STRING,
-  price: DataTypes.FLOAT,
-  quantity: DataTypes.INTEGER,
-  total: DataTypes.FLOAT
-}, { 
-  sequelize, 
-  modelName: 'product',
-  timestamps: false // Disable createdAt and updatedAt
-});
-
-sequelize.sync().then(() => {
-  console.log('Database & tables created!');
+// Create Product table if it doesn't exist
+db.run(`
+  CREATE TABLE IF NOT EXISTS product (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    price REAL,
+    quantity INTEGER,
+    total REAL
+  )
+`, (err) => {
+  if (err) {
+    console.error('Failed to create product table:', err);
+  } else {
+    console.log('Product table created or already exists.');
+  }
 });
 
 // Middleware for parsing request body
@@ -39,74 +43,75 @@ app.get('/health', (req, res) => {
 });
 
 // CRUD routes for Product model
-app.get('/products', async (req, res) => {
-  try {
-    const products = await Product.findAll();
-    res.json(products);
-  } catch (err) {
-    console.error('Failed to get products:', err);
-    res.status(500).json({ error: 'Failed to get products' });
-  }
+app.get('/products', (req, res) => {
+  db.all('SELECT * FROM product', [], (err, rows) => {
+    if (err) {
+      console.error('Failed to get products:', err);
+      res.status(500).json({ error: 'Failed to get products' });
+    } else {
+      res.json(rows);
+    }
+  });
 });
 
-app.get('/products/:id', async (req, res) => {
-  try {
-    const product = await Product.findByPk(req.params.id);
-    if (product) {
-      res.json(product);
+app.get('/products/:id', (req, res) => {
+  const { id } = req.params;
+  db.get('SELECT * FROM product WHERE id = ?', [id], (err, row) => {
+    if (err) {
+      console.error('Failed to get product:', err);
+      res.status(500).json({ error: 'Failed to get product' });
+    } else if (row) {
+      res.json(row);
     } else {
       res.status(404).json({ message: 'Product not found' });
     }
-  } catch (err) {
-    console.error('Failed to get product:', err);
-    res.status(500).json({ error: 'Failed to get product' });
-  }
+  });
 });
 
-app.post('/products', async (req, res) => {
-  try {
-    const product = await Product.create(req.body);
-    res.status(201).json(product);
-  } catch (err) {
-    console.error('Failed to create product:', err);
-    res.status(500).json({ error: 'Failed to create product' });
-  }
-});
-
-app.put('/products/:id', async (req, res) => {
-  try {
-    const product = await Product.findByPk(req.params.id);
-    if (product) {
-      await product.update(req.body);
-      res.json(product);
+app.post('/products', (req, res) => {
+  const { name, price, quantity, total } = req.body;
+  db.run('INSERT INTO product (name, price, quantity, total) VALUES (?, ?, ?, ?)', [name, price, quantity, total], function(err) {
+    if (err) {
+      console.error('Failed to create product:', err);
+      res.status(500).json({ error: 'Failed to create product' });
     } else {
-      res.status(404).json({ message: 'Product not found' });
+      res.status(201).json({ id: this.lastID, name, price, quantity, total });
     }
-  } catch (err) {
-    console.error('Failed to update product:', err);
-    res.status(500).json({ error: 'Failed to update product' });
-  }
+  });
 });
 
-app.delete('/products/:id', async (req, res) => {
-  try {
-    const product = await Product.findByPk(req.params.id);
-    if (product) {
-      await product.destroy();
+app.put('/products/:id', (req, res) => {
+  const { id } = req.params;
+  const { name, price, quantity, total } = req.body;
+  db.run('UPDATE product SET name = ?, price = ?, quantity = ?, total = ? WHERE id = ?', [name, price, quantity, total, id], function(err) {
+    if (err) {
+      console.error('Failed to update product:', err);
+      res.status(500).json({ error: 'Failed to update product' });
+    } else if (this.changes === 0) {
+      res.status(404).json({ message: 'Product not found' });
+    } else {
+      res.json({ id, name, price, quantity, total });
+    }
+  });
+});
+
+app.delete('/products/:id', (req, res) => {
+  const { id } = req.params;
+  db.run('DELETE FROM product WHERE id = ?', [id], function(err) {
+    if (err) {
+      console.error('Failed to delete product:', err);
+      res.status(500).json({ error: 'Failed to delete product' });
+    } else if (this.changes === 0) {
+      res.status(404).json({ message: 'Product not found' });
+    } else {
       res.json({ message: 'Product deleted' });
-    } else {
-      res.status(404).json({ message: 'Product not found' });
     }
-  } catch (err) {
-    console.error('Failed to delete product:', err);
-    res.status(500).json({ error: 'Failed to delete product' });
-  }
+  });
 });
-
 
 export const startServer = () => {
   app.listen(PORT, () => {
-    console.log(`Server is listing on port ${PORT}`);
+    console.log(`Server is listening on port ${PORT}`);
   });
   return new Promise((resolve, reject) => {
     console.log("Server started");

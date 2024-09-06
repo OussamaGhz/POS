@@ -61,12 +61,13 @@ const ProductSearch = () => {
             <List className="w-5 h-5" />
             <span className="text-2xl font-bold">Family:</span>
           </div>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap ">
             {families.map((family) => (
               <Button
                 key={family}
                 variant={selectedFamily === family ? "default" : "outline"}
                 onClick={() => setSelectedFamily(family)}
+                className="text-xl font-medium"
               >
                 {family}
               </Button>
@@ -78,7 +79,7 @@ const ProductSearch = () => {
             <ShoppingCart className="w-5 h-5" />
             <span className="text-2xl font-bold">Products:</span>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 text-xl font-medium">
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <div key={product.id} className="p-2 border rounded flex justify-between items-center">

@@ -5,7 +5,7 @@ import Sidebar from "../components/sidebar";
 
 const Layout: React.FC = () => {
   return (
-    <div className="flex w-screen gap-4 overflow-auto px-4">
+    <div className="flex w-screen gap-4 overflow-auto ">
       <Sidebar />
       <main className="w-full">
         <Outlet /> {/* This will render the matched route's component */}

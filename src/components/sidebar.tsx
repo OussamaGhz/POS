@@ -1,7 +1,6 @@
 import { ShoppingBasket, Warehouse, ChartArea } from "lucide-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-// eslint-disable-next-line import/no-unresolved
 
 const Sidebar = () => {
   const location = useLocation();
@@ -16,22 +15,19 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="flex flex-col w-64 bg-gradient-to-b from-white to-gray-100 dark:from-gray-800 dark:to-gray-700 h-screen">
+    <aside className="flex flex-col  bg-gradient-to-b from-white to-gray-100 dark:from-gray-800 dark:to-gray-700 h-screen items-center px-1">
       <div className="h-16 flex items-center justify-center border-b-2 my-7">
-        <h1 className="text-2xl font-semibold">Admin</h1>
+       
       </div>
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-2 ">
         <Link to="/" className={getLinkClasses("/")}>
-          <ShoppingBasket className="h-5 w-5" />
-          <span className="text-lg font-semibold">Commandes</span>
+          <ShoppingBasket className="h-5 w-7" />
         </Link>
         <Link to="/stock" className={getLinkClasses("/stock")}>
-          <Warehouse className="h-5 w-5" />
-          <span className="text-lg font-semibold">Stock</span>
+          <Warehouse className="h-5 w-7" />
         </Link>
         <Link to="/stats" className={getLinkClasses("/stats")}>
-          <ChartArea className="h-5 w-5" />
-          <span className="text-lg font-semibold">Statistiques</span>
+          <ChartArea className="h-5 w-7" />
         </Link>
       </ul>
     </aside>

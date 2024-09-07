@@ -8,6 +8,7 @@ import {
 import ProductTable from "../components/StockPage/product-table";
 import SearchBar from "../components/StockPage/search-bar";
 import AddProductDialog from "../components/StockPage/product-dialog";
+import AddFamilyDialog from "../components/StockPage/family-dialog";
 
 const products = [
   { id: "1", name: "Nutella Crepe", family: "Crepes", price: 300, amount: 50 },
@@ -74,6 +75,7 @@ const StockPage = () => {
         <div className="flex w-full gap-3">
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           <AddProductDialog />
+          <AddFamilyDialog />
         </div>
         <ProductTable products={filteredProducts} />
       </CardContent>

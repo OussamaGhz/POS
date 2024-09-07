@@ -15,10 +15,8 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="flex flex-col  bg-gradient-to-b from-white to-gray-100 dark:from-gray-800 dark:to-gray-700 h-screen items-center px-1">
-      <div className="h-16 flex items-center justify-center border-b-2 my-7">
-       
-      </div>
+    <aside className="flex flex-col  bg-gradient-to-b from-white to-gray-100 dark:from-gray-800 dark:to-gray-700 h-screen items-center px-1 py-4">
+      
       <ul className="flex flex-col gap-2 ">
         <Link to="/" className={getLinkClasses("/")}>
           <ShoppingBasket className="h-5 w-7" />

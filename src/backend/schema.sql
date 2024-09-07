@@ -1,46 +1,57 @@
--- Create table for product families
-CREATE TABLE product_families (
-    family_id INTEGER PRIMARY KEY,
-    family_name VARCHAR NOT NULL
+-- Table for product families
+CREATE TABLE families (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
 );
 
--- Create table for products
+-- Table for products
 CREATE TABLE products (
-    product_id INTEGER PRIMARY KEY,
-    product_name VARCHAR NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
     family_id INTEGER,
-    unit_type VARCHAR NOT NULL,
-    stock_amount DECIMAL,
-    cost_price DECIMAL,
-    selling_price DECIMAL,
-    FOREIGN KEY (family_id) REFERENCES product_families(family_id)
+    amount REAL NOT NULL,
+    unit TEXT NOT NULL,
+    cost_price REAL NOT NULL,
+    selling_price REAL NOT NULL,
+    FOREIGN KEY (family_id) REFERENCES families(id)
 );
 
--- Create table for purchase history
-CREATE TABLE purchase_history (
-    purchase_id INTEGER PRIMARY KEY,
+-- Table for commandes
+CREATE TABLE commandes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT NOT NULL,
+    total_price REAL NOT NULL
+);
+
+-- Table to link commandes with products
+CREATE TABLE commande_products (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    commande_id INTEGER NOT NULL,
     product_id INTEGER NOT NULL,
-    purchase_date TIMESTAMP NOT NULL,
-    added_stock DECIMAL NOT NULL,
-    cost_price DECIMAL NOT NULL,
-    FOREIGN KEY (product_id) REFERENCES products(product_id)
+    quantity REAL NOT NULL,
+    FOREIGN KEY (commande_id) REFERENCES commandes(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
--- Create table for orders
-CREATE TABLE orders (
-    order_id INTEGER PRIMARY KEY,
-    order_date TIMESTAMP NOT NULL,
-    total_price DECIMAL NOT NULL
+-- Table for commandes history
+CREATE TABLE commandes_history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    commande_id INTEGER NOT NULL,
+    date TEXT NOT NULL,
+    total_price REAL NOT NULL,
+    FOREIGN KEY (commande_id) REFERENCES commandes(id)
 );
 
--- Create table for order details
-CREATE TABLE order_details (
-    detail_id INTEGER PRIMARY KEY,
-    order_id INTEGER NOT NULL,
-    product_id INTEGER NOT NULL,
-    quantity DECIMAL NOT NULL,
-    unit_price DECIMAL NOT NULL,
-    total_price DECIMAL NOT NULL,
-    FOREIGN KEY (order_id) REFERENCES orders(order_id),
-    FOREIGN KEY (product_id) REFERENCES products(product_id)
+-- Table for daily profit
+CREATE TABLE daily_profit (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT NOT NULL,
+    profit REAL NOT NULL
+);
+
+-- Table for monthly profit
+CREATE TABLE monthly_profit (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    month TEXT NOT NULL,
+    profit REAL NOT NULL
 );

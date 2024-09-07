@@ -14,6 +14,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 
 const Commandes = () => {
+
+  const backendtest = async () => {
+    fetch("http://localhost:8000/products")
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
+  } 
+
   const products = useSelector((state: RootState) => state.cart.products);
   if (products.length === 0) {
     return (
@@ -43,7 +51,7 @@ const Commandes = () => {
           <div className="flex flex-col md:flex-row justify-between items-center h-[20%] font-bold text-2xl md:text-4xl">
             {/* Total */}
             <Total />
-            <Button className=" text-xl md:text-2xl font-semibold">
+            <Button className=" text-xl md:text-2xl font-semibold" onClick={backendtest}>
               Valider
             </Button>
           </div>

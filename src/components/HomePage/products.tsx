@@ -6,7 +6,15 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Search, List, ShoppingCart } from "lucide-react";
 import { addProduct } from "@/src/store/cartSlice";
-import Product from "@/src/utils/types";
+
+type Product = {
+  id: string;
+  name: string;
+  family: string;
+  quantity: number;
+  total: number;
+  price: number;
+};
 
 const ProductSearch = () => {
   const [searchTerm, setSearchTerm] = useState("");

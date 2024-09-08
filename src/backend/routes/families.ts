@@ -33,7 +33,15 @@ router.delete("/families/:id", (req, res) => {
       console.error("Failed to delete family:", err);
       res.status(500).json({ error: "Failed to delete family" });
     } else {
-      res.status(204).end();
+      // Delete related products
+      db.run("DELETE FROM products WHERE family_id = ?", [id], function (err) {
+        if (err) {
+          console.error("Failed to delete related products:", err);
+          res.status(500).json({ error: "Failed to delete related products" });
+        } else {
+          res.status(204).end();
+        }
+      });
     }
   });
 });

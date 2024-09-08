@@ -73,10 +73,10 @@ const AddFamilyDialog: React.FC = () => {
         if (res.ok) {
           fetchFamilies();
         } else {
-          console.error("Failed to delete family:", res);
+          alert("Failed to delete family:" + res);
         }
       })
-      .catch((err) => console.error("Failed to delete family:", err));
+      .catch((err) => alert("Failed to delete family:" + err));
   };
 
   return (

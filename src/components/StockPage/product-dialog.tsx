@@ -12,10 +12,12 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { z } from "zod";
+import addProduct from "../../utils/AddProduct";
+import { useNavigate } from "react-router-dom";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
-  family: z.string().min(1, "Family is required"),
+  family: z.number().min(1, "Family is required"),
   amount: z.number().min(0, "Amount must be a positive number"),
   unit: z.string().min(1, "Unit is required"),
   costPrice: z.number().min(0, "Cost price must be a positive number"),
@@ -23,6 +25,8 @@ const productSchema = z.object({
 });
 
 const AddProductDialog = () => {
+  const navigate = useNavigate();
+
   const [newProduct, setNewProduct] = useState({
     name: "",
     family: "",
@@ -53,7 +57,9 @@ const AddProductDialog = () => {
     setNewProduct((prev) => ({ ...prev, family: e.target.value }));
   };
 
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleFocus = (
+    e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name } = e.target;
     setErrors((prev) => ({ ...prev, [name]: false }));
   };
@@ -73,7 +79,9 @@ const AddProductDialog = () => {
       amount: parseFloat(newProduct.amount),
       costPrice: parseFloat(newProduct.costPrice),
       sellingPrice: parseFloat(newProduct.sellingPrice),
-      unit: newProduct.unit === "other" ? newProduct.customUnit : newProduct.unit,
+      unit:
+        newProduct.unit === "other" ? newProduct.customUnit : newProduct.unit,
+      family: parseInt(newProduct.family, 10),
     });
 
     if (!result.success) {
@@ -91,8 +99,20 @@ const AddProductDialog = () => {
       return;
     }
 
-    // Handle the save logic here, e.g., send the product details to the backend
-    console.log("Product details:", newProduct);
+    addProduct(result.data)
+      .then(() => {
+        setNewProduct({
+          name: "",
+          family: "",
+          amount: "",
+          unit: "kg",
+          customUnit: "",
+          costPrice: "",
+          sellingPrice: "",
+        });
+      })
+      .catch((err) => alert(`Failed to add product: ${err}`));
+
     setErrors({
       name: false,
       family: false,
@@ -101,6 +121,8 @@ const AddProductDialog = () => {
       costPrice: false,
       sellingPrice: false,
     });
+
+    navigate(0);
   };
 
   return (
@@ -137,7 +159,7 @@ const AddProductDialog = () => {
           >
             <option value="">Select Family</option>
             {families.map((family) => (
-              <option key={family.id} value={family.name}>
+              <option key={family.id} value={family.id}>
                 {family.name}
               </option>
             ))}

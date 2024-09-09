@@ -1,27 +1,29 @@
-import type { Configuration } from 'webpack';
-
-import { rules } from './webpack.rules';
-import { plugins } from './webpack.plugins';
+import type { Configuration } from "webpack";
+import path from "path";
+import { rules } from "./webpack.rules";
+import { plugins } from "./webpack.plugins";
 
 export const mainConfig: Configuration = {
   /**
    * This is the main entry point for your application; it's the first file
    * that runs in the main process.
    */
-  entry: './src/index.ts',
+  entry: "./src/index.ts",
   // Put your normal webpack config below here
   module: {
     rules,
   },
   plugins,
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
+    extensions: [".js", ".ts", ".jsx", ".tsx", ".css", ".json"],
+    alias: {
+      "@backend": path.resolve(__dirname, "src/backend"),
+    },
   },
-  // Exclude unnecessary modules related to PostgreSQL that are not needed for SQLite
-  externals: {
-    sequelize: 'commonjs sequelize',
-    pg: 'commonjs pg',          // Exclude the pg module
-    'pg-hstore': 'commonjs pg-hstore', // Exclude pg-hstore module
+  target: "electron-main",
+  node: {
+    __dirname: false,
+    __filename: false,
   },
 };
 

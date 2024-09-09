@@ -1,8 +1,9 @@
-import express from 'express';
-import productsRouter from './routes/products';
-import familiesRouter from './routes/families';
-import commandesRouter from './routes/commandes';
-import profitsRouter from './routes/profits';
+import express from "express";
+import productsRouter from "./routes/products";
+import familiesRouter from "./routes/families";
+import commandesRouter from "./routes/commandes";
+import profitsRouter from "./routes/profits";
+import router from "./routes/test";
 
 const app = express();
 const PORT = 8000;
@@ -11,11 +12,12 @@ const PORT = 8000;
 app.use(express.json());
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'Server is running' });
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "Server is running" });
 });
 
 // Use routers
+app.use(router);
 app.use(productsRouter);
 app.use(familiesRouter);
 app.use(commandesRouter);

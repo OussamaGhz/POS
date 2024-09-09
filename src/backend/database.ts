@@ -1,8 +1,15 @@
 import sqlite3 from 'sqlite3';
 import path from 'path';
+import { app } from 'electron';
 
-const DB_DIRNAME = "src/backend"; 
-const DB_PATH = path.resolve(DB_DIRNAME, 'database.sqlite');
+const getDatabasePath = () => {
+  const userDataPath = app.getPath('userData');
+  return path.join(userDataPath, 'database.sqlite');
+};
+
+const DB_PATH = getDatabasePath();
+console.log('Database path:', DB_PATH);
+
 
 // Create SQLite database instance
 export const db = new sqlite3.Database(DB_PATH, (err) => {
@@ -10,6 +17,7 @@ export const db = new sqlite3.Database(DB_PATH, (err) => {
     console.error('Failed to connect to the database:', err);
   } else {
     console.log('Connected to the SQLite database.');
+    
   }
 });
 

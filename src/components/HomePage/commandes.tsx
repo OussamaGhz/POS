@@ -14,15 +14,41 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 
 const Commandes = () => {
-
-  const backendtest = async () => {
-    fetch("http://localhost:8000/test")
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.error(error));
-  } 
-
   const products = useSelector((state: RootState) => state.cart.products);
+
+  const validOrder = () => {
+    // get date (day/month/year) and total price
+    const date = new Date().toLocaleDateString();
+    const total_price = products.reduce(
+      (acc, product) => acc + product.total,
+      0
+    );
+
+    console.log(products);
+    
+    
+    // fetch POST /commandes
+     fetch("http://localhost:8000/commandes", {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify({ date, total_price, products }),
+     })
+       .then((res) => {
+         if (res.ok) {
+           return res.json();
+         }
+         throw new Error("Failed to create commande");
+       })
+       .then((data) => {
+         console.log("Commande created:", data);
+       })
+       .catch((error) => {
+         console.error("Failed to create commande:", error);
+       });
+  };
+
   if (products.length === 0) {
     return (
       <div className="md:col-span-4 lg:col-span-3 xl:col-span-4 flex flex-col gap-6 h-full">
@@ -47,11 +73,14 @@ const Commandes = () => {
           <CardTitle>Commande</CardTitle>
         </CardHeader>
         <CardContent className="flex-col h-[80%]">
-          <OrderTable />
+          <OrderTable products={products} />
           <div className="flex flex-col md:flex-row justify-between items-center h-[20%] font-bold text-2xl md:text-4xl">
             {/* Total */}
             <Total />
-            <Button className=" text-xl md:text-2xl font-semibold" onClick={backendtest}>
+            <Button
+              className=" text-xl md:text-2xl font-semibold"
+              onClick={validOrder}
+            >
               Valider
             </Button>
           </div>

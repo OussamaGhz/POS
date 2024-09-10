@@ -11,8 +11,6 @@ import AddProductDialog from "../components/StockPage/product-dialog";
 import AddFamilyDialog from "../components/StockPage/family-dialog";
 import { product } from "../utils/AddProduct";
 
-
-
 const StockPage = () => {
   const [products, setProducts] = useState<product[]>([]);
   // fetch data
@@ -21,8 +19,7 @@ const StockPage = () => {
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => alert(`Failed to fetch products: ${err}`));
-  }, []);  
-
+  }, []);
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -31,19 +28,21 @@ const StockPage = () => {
   );
 
   return (
-    <Card className="w-full h-full flex flex-col gap-4 p-4 ">
-      <CardHeader>
-        <CardTitle>Stock Page</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <div className="flex w-full gap-3">
-          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-          <AddProductDialog />
-          <AddFamilyDialog />
-        </div>
-        <ProductTable products={filteredProducts} />
-      </CardContent>
-    </Card>
+    <div className="w-full h-screen p-4">
+      <Card className="w-full h-full flex flex-col gap-4 p-4 ">
+        <CardHeader>
+          <CardTitle>Stock Page</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <div className="flex w-full gap-3">
+            <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+            <AddProductDialog />
+            <AddFamilyDialog />
+          </div>
+          <ProductTable products={filteredProducts} />
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

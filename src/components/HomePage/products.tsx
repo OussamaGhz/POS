@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -13,39 +13,43 @@ type Product = {
   family: string;
   quantity: number;
   total: number;
-  price: number;
+  selling_price: number;
 };
 
 const ProductSearch = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFamily, setSelectedFamily] = useState("All");
   const dispatch = useDispatch();
-  const families = ["All", "Crepes", "Glace gelato", "Glace machine", "Jus", "Gofres"];
-  const products = [
-    { id: "1", name: "Nutella Crepe", family: "Crepes", price: 300 },
-    { id: "2", name: "Strawberry Crepe", family: "Crepes", price: 350 },
-    { id: "3", name: "Vanilla Gelato", family: "Glace gelato", price: 250 },
-    { id: "4", name: "Chocolate Gelato", family: "Glace gelato", price: 250 },
-    { id: "5", name: "Soft Serve Ice Cream", family: "Glace machine", price: 200 },
-    { id: "6", name: "Frozen Yogurt", family: "Glace machine", price: 200 },
-    { id: "7", name: "Orange Juice", family: "Jus", price: 150 },
-    { id: "8", name: "Apple Juice", family: "Jus", price: 150 },
-    { id: "9", name: "Classic Gofre", family: "Gofres", price: 400 },
-    { id: "10", name: "Chocolate Gofre", family: "Gofres", price: 450 },
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:8000/products")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+
+        setProducts(data);
+      })
+      .catch((error) => console.error(error));
+  }, []);
+
+  // filter families
+  const families = [
+    "All",
+    ...new Set(products.map((product) => product.family_name)),
   ];
 
   const filteredProducts = products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedFamily === "All" || product.family === selectedFamily)
+      (selectedFamily === "All" || product.family_name === selectedFamily)
   );
 
   const handleAddToCart = (product: Product) => {
     dispatch(
       addProduct({
         ...product,
-        quantity: 1,
-        total: product.price,
+        amount: 1,
+        total: product.selling_price,
       })
     );
   };
@@ -90,9 +94,22 @@ const ProductSearch = () => {
           <div className="flex flex-col gap-2 text-xl font-medium">
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
-                <div key={product.id} className="p-2 border rounded flex justify-between items-center">
-                  {product.name} - {product.price} DA
-                  <Button onClick={() => handleAddToCart({ ...product, quantity: 1, total: product.price })}>Add to Cart</Button>
+                <div
+                  key={product.id}
+                  className="p-2 border rounded flex justify-between items-center"
+                >
+                  {product.name} - {product.selling_price} DA
+                  <Button
+                    onClick={() =>
+                      handleAddToCart({
+                        ...product,
+                        quantity: 1,
+                        total: product.price,
+                      })
+                    }
+                  >
+                    Add to Cart
+                  </Button>
                 </div>
               ))
             ) : (

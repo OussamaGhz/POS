@@ -3,8 +3,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 type Product = {
   id: string;
   name: string;
-  price: number;
-  quantity: number;
+  selling_price: number;
+  amount: number;
   total: number;
 };
 
@@ -25,7 +25,7 @@ const cartSlice = createSlice({
         (product) => product.id === action.payload.id
       );
       if (existingProduct) {
-        existingProduct.quantity += action.payload.quantity;
+        existingProduct.amount += action.payload.amount;
         existingProduct.total += action.payload.total;
       } else {
         state.products.push(action.payload);
@@ -36,8 +36,8 @@ const cartSlice = createSlice({
         (product) => product.id === action.payload
       );
       if (product) {
-        product.quantity += 1;
-        product.total += product.price;
+        product.amount += 1;
+        product.total += product.selling_price;
       }
     },
     decrementQuantity: (state, action: PayloadAction<string>) => {
@@ -46,9 +46,9 @@ const cartSlice = createSlice({
       );
       if (productIndex !== -1) {
         const product = state.products[productIndex];
-        if (product.quantity > 1) {
-          product.quantity -= 1;
-          product.total -= product.price;
+        if (product.amount > 1) {
+          product.amount -= 1;
+          product.total -= product.selling_price;
         } else {
           state.products.splice(productIndex, 1);
         }

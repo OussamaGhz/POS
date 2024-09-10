@@ -38,7 +38,7 @@ const AddFamilyDialog: React.FC = () => {
       .then((data) => setFamilies(data))
       .catch((err) => console.error("Failed to fetch families:", err));
   };
-
+  
   const handleSave = () => {
     const result = familySchema.safeParse({ name: familyName });
     if (!result.success) {
@@ -80,7 +80,7 @@ const AddFamilyDialog: React.FC = () => {
   };
 
   return (
-    <Dialog>
+    <Dialog >
       <DialogTrigger asChild>
         <Button variant="default" size="default">
           Manage Families

@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Button } from "@/src/components/ui/button";
 import {
   Table,
@@ -12,13 +12,21 @@ import {
 } from "@/src/components/ui/table";
 import { Minus, Plus, TrashIcon } from "lucide-react";
 import { Input } from "../ui/input";
-import { RootState } from "@/src/store/store";
 import { incrementQuantity, decrementQuantity, deleteProduct } from "@/src/store/cartSlice";
 
-const OrderTable = () => {
-  const dispatch = useDispatch();
-  const products = useSelector((state: RootState) => state.cart.products);
+type props = {
+  products: {
+    id: string;
+    name: string;
+    selling_price: number;
+    amount: number;
+    total: number;
+  }[];
+};
 
+
+const OrderTable = (props: props) => {
+  const dispatch = useDispatch();
   return (
     <div className="h-full border-b-2 overflow-scroll">
       <Table className="">
@@ -32,10 +40,10 @@ const OrderTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {products.map((product) => (
+          {props.products.map((product) => (
             <TableRow key={product.id}>
               <TableCell className="w-[100px]">{product.name}</TableCell>
-              <TableCell className="w-[50px] font-medium">{product.price}DA</TableCell>
+              <TableCell className="w-[50px] font-medium">{product.selling_price}DA</TableCell>
               <TableCell className="w-[50px] flex items-center gap-2">
                 <Button
                   variant="outline"
@@ -47,7 +55,7 @@ const OrderTable = () => {
                 </Button>
                 <Input
                   type="text"
-                  value={product.quantity}
+                  value={product.amount}
                   className="w-20 text-center"
                   readOnly
                 />

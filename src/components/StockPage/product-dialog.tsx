@@ -122,7 +122,7 @@ const AddProductDialog = () => {
       sellingPrice: false,
     });
 
-    navigate(0);
+    
   };
 
   return (

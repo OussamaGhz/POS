@@ -23,7 +23,7 @@ router.post('/commandes', (req, res) => {
     } else {
       const commandeId = this.lastID;
       const placeholders = products.map(() => '(?, ?, ?)').join(',');
-      const values = products.flatMap((p: { product_id: number, quantity: number }) => [commandeId, p.product_id, p.quantity]);
+      const values = products.flatMap((p: { id: number, amount: number }) => [commandeId, p.id, p.amount]);
       db.run(`INSERT INTO commande_products (commande_id, product_id, quantity) VALUES ${placeholders}`, values, function(err) {
         if (err) {
           console.error('Failed to link products to commande:', err);

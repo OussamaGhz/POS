@@ -1,11 +1,12 @@
 /* eslint-disable import/no-unresolved */
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Search, List, ShoppingCart } from "lucide-react";
 import { addProduct } from "@/src/store/cartSlice";
+import { RootState } from "@/src/store/store";
 
 type Product = {
   id: string;
@@ -25,12 +26,14 @@ const ProductSearch = () => {
     fetch("http://localhost:8000/products")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-
+        //filter product that have 0 or less quantity
+        data = data.filter((product: any) => product.amount > 0);
         setProducts(data);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => alert(error));
   }, []);
+
+  const cartProducts = useSelector((state: RootState) => state.cart.products);
 
   // filter families
   const families = [
@@ -53,6 +56,9 @@ const ProductSearch = () => {
       })
     );
   };
+
+  console.log("cartProducts", cartProducts);
+  console.log("products", products);
 
   return (
     <Card className="w-full h-full flex flex-col gap-4 py-2 overflow-auto">
@@ -100,13 +106,33 @@ const ProductSearch = () => {
                 >
                   {product.name} - {product.selling_price} DA
                   <Button
-                    onClick={() =>
-                      handleAddToCart({
-                        ...product,
-                        quantity: 1,
-                        total: product.price,
-                      })
-                    }
+                    onClick={() => {
+                      if (cartProducts.length === 0) {
+                        handleAddToCart({
+                          ...product,
+                          quantity: 1,
+                          total: product.price,
+                        });
+                        return;
+                      } else {
+                        const index = cartProducts.findIndex(
+                          (p) => p.id === product.id
+                        );
+                        if (
+                          index === -1 ||
+                          cartProducts[index].amount < product.amount
+                        ) {
+                          handleAddToCart({
+                            ...product,
+                            quantity: 1,
+                            total: product.price,
+                          });
+                          return;
+                        } else {
+                          alert("Product is out of stock");
+                        }
+                      }
+                    }}
                   >
                     Add to Cart
                   </Button>

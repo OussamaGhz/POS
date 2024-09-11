@@ -85,6 +85,24 @@ router.put("/products/:id", (req, res) => {
   );
 });
 
+// route to update the amount of a product
+router.put("/products/:id/amount", (req, res) => {
+  const { id } = req.params;
+  const { amount } = req.body;
+  db.run("UPDATE products SET amount = ? WHERE id = ?", [amount, id], function (
+    err
+  ) {
+    if (err) {
+      console.error("Failed to update product amount:", err);
+      res.status(500).json({ error: "Failed to update product amount" });
+    } else if (this.changes === 0) {
+      res.status(404).json({ message: "Product not found" });
+    } else {
+      res.json({ id, amount });
+    }
+  });
+});
+
 router.delete("/products/:id", (req, res) => {
   const { id } = req.params;
   db.run("DELETE FROM products WHERE id = ?", [id], function (err) {

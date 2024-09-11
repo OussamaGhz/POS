@@ -27,6 +27,9 @@ const StockPage = () => {
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  console.log(products);
+  
+
   return (
     <div className="w-full h-screen p-4">
       <Card className="w-full h-full flex flex-col gap-4 p-4 ">

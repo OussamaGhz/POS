@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -14,39 +14,40 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 
 const Commandes = () => {
+ 
   const products = useSelector((state: RootState) => state.cart.products);
+  console.log("products", products);
+  
 
   const validOrder = () => {
-    // get date (day/month/year) and total price
-    const date = new Date().toLocaleDateString();
+    // get total price
     const total_price = products.reduce(
       (acc, product) => acc + product.total,
       0
     );
 
-    console.log(products);
-    
-    
     // fetch POST /commandes
-     fetch("http://localhost:8000/commandes", {
-       method: "POST",
-       headers: {
-         "Content-Type": "application/json",
-       },
-       body: JSON.stringify({ date, total_price, products }),
-     })
-       .then((res) => {
-         if (res.ok) {
-           return res.json();
-         }
-         throw new Error("Failed to create commande");
-       })
-       .then((data) => {
-         console.log("Commande created:", data);
-       })
-       .catch((error) => {
-         console.error("Failed to create commande:", error);
-       });
+    fetch("http://localhost:8000/commandes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ total_price, products }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error("Failed to create commande");
+      })
+      .then((data) => {
+        console.log("Commande created:", data);
+      })
+      .catch((error) => {
+        console.error("Failed to create commande:", error);
+      });
+
+    window.location.reload();
   };
 
   if (products.length === 0) {

@@ -19,7 +19,7 @@ CREATE TABLE products (
 -- Table for commandes
 CREATE TABLE commandes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    date TEXT NOT NULL,
+    date TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
     total_price REAL NOT NULL
 );
 
@@ -37,7 +37,7 @@ CREATE TABLE commande_products (
 CREATE TABLE commandes_history (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     commande_id INTEGER NOT NULL,
-    date TEXT NOT NULL,
+    date TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
     total_price REAL NOT NULL,
     FOREIGN KEY (commande_id) REFERENCES commandes(id)
 );
@@ -45,13 +45,13 @@ CREATE TABLE commandes_history (
 -- Table for daily profit
 CREATE TABLE daily_profit (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    date TEXT NOT NULL,
+    date TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
     profit REAL NOT NULL
 );
 
 -- Table for monthly profit
 CREATE TABLE monthly_profit (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    month TEXT NOT NULL,
+    month TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
     profit REAL NOT NULL
 );

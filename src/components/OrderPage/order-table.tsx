@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "@/src/components/ui/button";
 import {
@@ -12,7 +12,11 @@ import {
 } from "@/src/components/ui/table";
 import { Minus, Plus, TrashIcon } from "lucide-react";
 import { Input } from "../ui/input";
-import { incrementQuantity, decrementQuantity, deleteProduct } from "@/src/store/cartSlice";
+import {
+  incrementQuantity,
+  decrementQuantity,
+  deleteProduct,
+} from "@/src/store/cartSlice";
 
 type props = {
   products: {
@@ -24,8 +28,16 @@ type props = {
   }[];
 };
 
-
 const OrderTable = (props: props) => {
+  const [stockPorudcts, setProducts] = useState([]);
+  // fetch data
+  useEffect(() => {
+    fetch("http://localhost:8000/products")
+      .then((res) => res.json())
+      .then((data) => setProducts(data))
+      .catch((err) => alert(`Failed to fetch products: ${err}`));
+  }, []);
+
   const dispatch = useDispatch();
   return (
     <div className="h-full border-b-2 overflow-scroll">
@@ -43,13 +55,17 @@ const OrderTable = (props: props) => {
           {props.products.map((product) => (
             <TableRow key={product.id}>
               <TableCell className="w-[100px]">{product.name}</TableCell>
-              <TableCell className="w-[50px] font-medium">{product.selling_price}DA</TableCell>
+              <TableCell className="w-[50px] font-medium">
+                {product.selling_price}DA
+              </TableCell>
               <TableCell className="w-[50px] flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="icon"
                   className="h-8 w-10"
-                  onClick={() => dispatch(decrementQuantity(product.id))}
+                  onClick={() => {
+                    dispatch(decrementQuantity(product.id));
+                  }}
                 >
                   <Minus className="h-6 w-8" />
                 </Button>
@@ -63,17 +79,32 @@ const OrderTable = (props: props) => {
                   variant="outline"
                   size="icon"
                   className="h-8 w-8"
-                  onClick={() => dispatch(incrementQuantity(product.id))}
+                  onClick={() => {
+                    stockPorudcts.map((p: any) => {
+                      if (p.id === product.id) {
+                        if (p.amount <= product.amount) {
+                          alert("Product is out of stock");
+                          return;
+                        } else {
+                          dispatch(incrementQuantity(product.id));
+                        }
+                      }
+                    });
+                  }}
                 >
                   <Plus className="h-6 w-8" />
                 </Button>
               </TableCell>
-              <TableCell className="w-[100px] text-center">{product.total}DA</TableCell>
+              <TableCell className="w-[100px] text-center">
+                {product.total}DA
+              </TableCell>
               <TableCell className="w-[25px] hidden md:table-cell">
                 <Button
                   variant="destructive"
                   size="icon"
-                  onClick={() => dispatch(deleteProduct(product.id))}
+                  onClick={() => {
+                    dispatch(deleteProduct(product.id));
+                  }}
                 >
                   <TrashIcon className="h-4 w-4" />
                   <span className="sr-only">Delete</span>

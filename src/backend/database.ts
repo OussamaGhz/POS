@@ -21,7 +21,6 @@ export const db = new sqlite3.Database(DB_PATH, (err) => {
   }
 });
 
-// Create tables if they don't exist
 const createTables = () => {
   const queries = [
     `CREATE TABLE IF NOT EXISTS families (
@@ -40,7 +39,7 @@ const createTables = () => {
     )`,
     `CREATE TABLE IF NOT EXISTS commandes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      date TEXT NOT NULL,
+      date TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
       total_price REAL NOT NULL
     )`,
     `CREATE TABLE IF NOT EXISTS commande_products (
@@ -54,18 +53,18 @@ const createTables = () => {
     `CREATE TABLE IF NOT EXISTS commandes_history (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       commande_id INTEGER NOT NULL,
-      date TEXT NOT NULL,
+      date TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
       total_price REAL NOT NULL,
       FOREIGN KEY (commande_id) REFERENCES commandes(id)
     )`,
     `CREATE TABLE IF NOT EXISTS daily_profit (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      date TEXT NOT NULL,
+      date TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
       profit REAL NOT NULL
     )`,
     `CREATE TABLE IF NOT EXISTS monthly_profit (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      month TEXT NOT NULL,
+      month TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
       profit REAL NOT NULL
     )`
   ];

@@ -15,8 +15,8 @@ router.get('/commandes', (req, res) => {
 });
 
 router.post('/commandes', (req, res) => {
-  const { date, total_price, products } = req.body;
-  db.run('INSERT INTO commandes (date, total_price) VALUES (?, ?)', [date, total_price], function(err) {
+  const { total_price, products } = req.body;
+  db.run('INSERT INTO commandes (total_price) VALUES (?)', [total_price], function(err) {
     if (err) {
       console.error('Failed to create commande:', err);
       res.status(500).json({ error: 'Failed to create commande' });
@@ -29,11 +29,10 @@ router.post('/commandes', (req, res) => {
           console.error('Failed to link products to commande:', err);
           res.status(500).json({ error: 'Failed to link products to commande' });
         } else {
-          res.status(201).json({ id: commandeId, date, total_price, products });
+          res.status(201).json({ id: commandeId, total_price, products });
         }
       });
     }
   });
 });
-
 export default router;

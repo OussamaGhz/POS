@@ -16,8 +16,8 @@ import { RootState } from "@/src/store/store";
 const Commandes = () => {
  
   const products = useSelector((state: RootState) => state.cart.products);
-  console.log("products", products);
-  
+  console.log("products", products);  
+
 
   const validOrder = () => {
     // get total price

@@ -56,10 +56,6 @@ const ProductSearch = () => {
       })
     );
   };
-
-  console.log("cartProducts", cartProducts);
-  console.log("products", products);
-
   return (
     <Card className="w-full h-full flex flex-col gap-4 py-2 overflow-auto">
       <CardHeader>

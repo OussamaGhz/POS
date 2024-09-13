@@ -24,7 +24,6 @@ const Historique = () => {
     fetch("http://localhost:8000/commandes")
       .then((res) => res.json())
       .then((data) => {
-       console.log(data);
         // sort by latest date and time
         data.sort((a: Transaction, b: Transaction) => {
           return new Date(b.date).getTime() - new Date(a.date).getTime();
@@ -43,7 +42,7 @@ const Historique = () => {
       .catch((error) => {
         alert("Failed to fetch commandes:" + error);
       });
-  }, []);
+  }, []);  
 
   return (
     <Card className="">

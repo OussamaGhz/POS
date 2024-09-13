@@ -34,6 +34,8 @@ router.get("/products/:id", (req, res) => {
 
 router.post("/products", (req, res) => {
   const { name, family_id, amount, unit, cost_price, selling_price } = req.body;
+  console.log(family_id);
+  
   db.run(
     "INSERT INTO products (name, family_id, amount, unit, cost_price, selling_price) VALUES (?, ?, ?, ?, ?, ?)",
     [name, family_id, amount, unit, cost_price, selling_price],
@@ -60,6 +62,8 @@ router.post("/products", (req, res) => {
 
 router.put("/products/:id", (req, res) => {
   const { id } = req.params;
+  console.log(req.body);
+  
   const { name, family_id, amount, unit, cost_price, selling_price } = req.body;
   db.run(
     "UPDATE products SET name = ?, family_id = ?, amount = ?, unit = ?, cost_price = ?, selling_price = ? WHERE id = ?",

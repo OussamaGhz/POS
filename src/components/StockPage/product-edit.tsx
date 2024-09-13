@@ -12,27 +12,35 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { z } from "zod";
-import addProduct from "../../utils/AddProduct";
 import { useNavigate } from "react-router-dom";
+import { Edit2 } from "lucide-react";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
   family: z.number().min(1, "Family is required"),
   amount: z.number().min(0, "Amount must be a positive number"),
   unit: z.string().min(1, "Unit is required"),
-  costPrice: z.number().min(0, "Cost price must be a positive number"),
-  sellingPrice: z.number().min(0, "Selling price must be a positive number"),
+  cost_price: z.number().min(0, "Cost price must be a positive number"),
+  selling_price: z.number().min(0, "Selling price must be a positive number"),
 });
 
-const AddProductDialog = () => {
-  const [newProduct, setNewProduct] = useState({
-    name: "",
-    family: "",
-    amount: "",
-    unit: "kg",
+const EditProductDialog = ({
+  product,
+  families,
+}: {
+  product: any;
+  families: any;
+}) => {
+  const navigate = useNavigate();
+
+  const [updatedProduct, setUpdatedProduct] = useState({
+    name: product.name,
+    family: product.family_id?.toString(),
+    amount: product.amount?.toString(),
+    unit: product.unit,
     customUnit: "",
-    costPrice: "",
-    sellingPrice: "",
+    cost_price: product.cost_price?.toString(),
+    selling_price: product.selling_price?.toString(),
   });
 
   const [errors, setErrors] = useState({
@@ -40,19 +48,19 @@ const AddProductDialog = () => {
     family: false,
     amount: false,
     unit: false,
-    costPrice: false,
-    sellingPrice: false,
+    cost_price: false,
+    selling_price: false,
   });
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setNewProduct((prev) => ({ ...prev, [name]: value }));
+    setUpdatedProduct((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFamilyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setNewProduct((prev) => ({ ...prev, family: e.target.value }));
+    setUpdatedProduct((prev) => ({ ...prev, family: e.target.value }));
   };
 
   const handleFocus = (
@@ -62,24 +70,17 @@ const AddProductDialog = () => {
     setErrors((prev) => ({ ...prev, [name]: false }));
   };
 
-  // fetch families from the backend
-  const [families, setFamilies] = useState([]);
-  useEffect(() => {
-    fetch("http://localhost:8000/families")
-      .then((res) => res.json())
-      .then(setFamilies)
-      .catch((err) => console.error("Failed to fetch families:", err));
-  }, []);
-
   const handleSave = () => {
     const result = productSchema.safeParse({
-      ...newProduct,
-      amount: parseFloat(newProduct.amount),
-      costPrice: parseFloat(newProduct.costPrice),
-      sellingPrice: parseFloat(newProduct.sellingPrice),
+      ...updatedProduct,
+      amount: parseFloat(updatedProduct.amount),
+      cost_price: parseFloat(updatedProduct.cost_price),
+      selling_price: parseFloat(updatedProduct.selling_price),
       unit:
-        newProduct.unit === "other" ? newProduct.customUnit : newProduct.unit,
-      family: parseInt(newProduct.family, 10),
+        updatedProduct.unit === "other"
+          ? updatedProduct.customUnit
+          : updatedProduct.unit,
+      family: parseInt(updatedProduct.family, 10),
     });
 
     if (!result.success) {
@@ -97,49 +98,60 @@ const AddProductDialog = () => {
       return;
     }
 
-    addProduct(result.data)
-      .then(() => {
-        setNewProduct({
-          name: "",
-          family: "",
-          amount: "",
-          unit: "kg",
-          customUnit: "",
-          costPrice: "",
-          sellingPrice: "",
-        });
+    const body = {
+      name: result.data.name,
+      family_id: result.data.family,
+      amount: result.data.amount,
+      unit: result.data.unit,
+      cost_price: result.data.cost_price,
+      selling_price: result.data.selling_price,
+    }
+
+    fetch(`http://localhost:8000/products/${product.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    })
+      .then((res) => {
+        if (res.ok) {
+          navigate(0);
+        } else {
+          alert("Failed to update product:" + res);
+        }
       })
-      .catch((err) => alert(`Failed to add product: ${err}`));
+      .catch((err) => alert(`Failed to update product: ${err}`));
 
     setErrors({
       name: false,
       family: false,
       amount: false,
       unit: false,
-      costPrice: false,
-      sellingPrice: false,
+      cost_price: false,
+      selling_price: false,
     });
-
-    
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Add new product</Button>
+        <Button variant="outline">
+          <Edit2 className="w-5 h-5" />
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Product</DialogTitle>
+          <DialogTitle>Edit Product</DialogTitle>
           <DialogDescription>
-            Fill in the details below to add a new product.
+            Modify the details below to update the product.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <Input
             placeholder="Product Name"
             name="name"
-            value={newProduct.name}
+            value={updatedProduct.name}
             onChange={handleInputChange}
             onFocus={handleFocus}
             className={`w-full p-2 border rounded ${
@@ -148,7 +160,7 @@ const AddProductDialog = () => {
           />
           <select
             name="family"
-            value={newProduct.family}
+            value={updatedProduct.family}
             onChange={handleFamilyChange}
             onFocus={handleFocus}
             className={`w-full p-2 border rounded ${
@@ -156,7 +168,7 @@ const AddProductDialog = () => {
             }`}
           >
             <option value="">Select Family</option>
-            {families.map((family) => (
+            {families.map((family: any) => (
               <option key={family.id} value={family.id}>
                 {family.name}
               </option>
@@ -166,7 +178,7 @@ const AddProductDialog = () => {
             <Input
               placeholder="Amount"
               name="amount"
-              value={newProduct.amount}
+              value={updatedProduct.amount}
               onChange={handleInputChange}
               onFocus={handleFocus}
               className={`w-full p-2 border rounded ${
@@ -175,7 +187,7 @@ const AddProductDialog = () => {
             />
             <select
               name="unit"
-              value={newProduct.unit}
+              value={updatedProduct.unit}
               onChange={handleInputChange}
               onFocus={handleFocus}
               className={`w-full p-2 border rounded ${
@@ -187,11 +199,11 @@ const AddProductDialog = () => {
               <option value="units">units</option>
               <option value="other">Other</option>
             </select>
-            {newProduct.unit === "other" && (
+            {updatedProduct.unit === "other" && (
               <Input
                 placeholder="Custom Unit"
                 name="customUnit"
-                value={newProduct.customUnit}
+                value={updatedProduct.customUnit}
                 onChange={handleInputChange}
                 onFocus={handleFocus}
                 className={`w-full p-2 border rounded ${
@@ -202,22 +214,22 @@ const AddProductDialog = () => {
           </div>
           <Input
             placeholder="Cost Price"
-            name="costPrice"
-            value={newProduct.costPrice}
+            name="cost_price"
+            value={updatedProduct.cost_price}
             onChange={handleInputChange}
             onFocus={handleFocus}
             className={`w-full p-2 border rounded ${
-              errors.costPrice ? "border-red-500" : ""
+              errors.cost_price ? "border-red-500" : ""
             }`}
           />
           <Input
             placeholder="Selling Price"
-            name="sellingPrice"
-            value={newProduct.sellingPrice}
+            name="selling_price"
+            value={updatedProduct.selling_price}
             onChange={handleInputChange}
             onFocus={handleFocus}
             className={`w-full p-2 border rounded ${
-              errors.sellingPrice ? "border-red-500" : ""
+              errors.selling_price ? "border-red-500" : ""
             }`}
           />
         </div>
@@ -225,11 +237,11 @@ const AddProductDialog = () => {
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button onClick={handleSave}>Add Product</Button>
+          <Button onClick={handleSave}>Save Changes</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default AddProductDialog;
+export default EditProductDialog;

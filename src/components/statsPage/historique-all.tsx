@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   Table,
@@ -8,40 +8,45 @@ import {
   TableBody,
   TableCell,
 } from "../ui/table";
-import { Button } from "../ui/button";
-import { Link } from "react-router-dom";
+import { Commande } from "../../pages/StatsPage";
 
 type Transaction = {
-  id: string;
-  time: string;
-  total: number;
+  id: number;
   date: string;
+  time: string;
+  total_price: number;
 };
 
-const HistoriqueAll = () => {
-  const transactions: Transaction[] = [
-    {
-      id: "1",
-      time: "10:00",
+interface HistoriqueProps {
+  data: Commande[];
+}
 
-      total: 50.0,
-      date: "2023-10-01",
-    },
-    {
-      id: "2",
-      time: "11:00",
+const Historique = ({ data }: HistoriqueProps) => {
+  const [transactions, setTransactions] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:8000/commandes")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        // sort by latest date and time
+        data.sort((a: Transaction, b: Transaction) => {
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        });
 
-      total: 30.0,
-      date: "2023-10-02",
-    },
-    {
-      id: "3",
-      time: "12:00",
+        // split date and time
+        data.forEach((transaction: Transaction) => {
+          const date = new Date(transaction.date);
+          transaction.date = date.toLocaleDateString();
+          transaction.time = date.toLocaleTimeString();
+        });
 
-      total: 20.0,
-      date: "2023-10-03",
-    },
-  ];
+        // get only 3 latest transactions
+        setTransactions(data.slice(0, 3));
+      })
+      .catch((error) => {
+        alert("Failed to fetch commandes:" + error);
+      });
+  }, []);
 
   return (
     <Card className="">
@@ -66,7 +71,7 @@ const HistoriqueAll = () => {
                 </TableCell>
 
                 <TableCell>{transaction.date}</TableCell>
-                <TableCell>{transaction.total}$</TableCell>
+                <TableCell>{transaction.total_price}DA</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -76,4 +81,4 @@ const HistoriqueAll = () => {
   );
 };
 
-export default HistoriqueAll;
+export default Historique;

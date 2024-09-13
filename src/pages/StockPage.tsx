@@ -17,7 +17,10 @@ const StockPage = () => {
   useEffect(() => {
     fetch("http://localhost:8000/products")
       .then((res) => res.json())
-      .then((data) => setProducts(data))
+      .then((data) => {
+        console.log(data);
+        setProducts(data);
+      })
       .catch((err) => alert(`Failed to fetch products: ${err}`));
   }, []);
 
@@ -26,9 +29,6 @@ const StockPage = () => {
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  console.log(products);
-  
 
   return (
     <div className="w-full h-screen p-4">

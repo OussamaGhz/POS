@@ -39,6 +39,13 @@ const createWindow = (): void => {
       meta.content = "default-src 'self'; connect-src 'self' http://localhost:3000 http://localhost:8000; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';";
       document.getElementsByTagName('head')[0].appendChild(meta);
     `);
+
+    // Check if the current URL includes '/print' and trigger the print dialog
+    if (mainWindow.webContents.getURL().includes("/print")) {
+      console.log(mainWindow.webContents.getURL().includes("/print"));
+
+      mainWindow.webContents.print({ silent: true, printBackground: true });
+    }
   });
 };
 

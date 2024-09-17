@@ -4,10 +4,9 @@ import Layout from "./layouts/route-layout";
 import HomePage from "./pages/HomePage";
 import StatsPage from "./pages/StatsPage";
 import StockPage from "./pages/StockPage";
+import PrintPage from "./components/statsPage/print-page";// Import the PrintPage component
 
 function App() {
-  
-
   // Define the router with routes
   const router = createHashRouter([
     {
@@ -17,6 +16,7 @@ function App() {
         { index: true, element: <HomePage /> },
         { path: "stock", element: <StockPage /> },
         { path: "stats", element: <StatsPage /> },
+        { path: "print", element: <PrintPage /> }, // Add the PrintPage route
       ],
     },
   ]);

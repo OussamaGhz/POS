@@ -19,6 +19,7 @@ import {
   TableCaption,
 } from "../ui/table";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { useNavigate } from "react-router-dom";
 
 type Transaction = {
   id: number;
@@ -39,6 +40,7 @@ type Product = {
 
 export function DetailDialog(transaction: Transaction) {
   const [products, setProducts] = useState<Product[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`http://localhost:8000/commandes/${transaction.id}/products`)
@@ -49,6 +51,10 @@ export function DetailDialog(transaction: Transaction) {
         setProducts(data);
       });
   }, [transaction]);
+
+  const handlePrint = () => {
+    navigate("/print", { state: { ...transaction, products } });
+  };
 
   return (
     <Dialog>
@@ -90,13 +96,16 @@ export function DetailDialog(transaction: Transaction) {
                     </TableCell>
                   </TableRow>
                 ))}
-              </TableBody>
+              </TableBody> 
             </Table>
           ) : (
             <p>No products found for this transaction.</p>
           )}
         </div>
         <DialogFooter>
+          <Button variant="default" onClick={handlePrint}>
+            Print
+          </Button>
           <DialogClose>
             <Button variant="ghost">Close</Button>
           </DialogClose>

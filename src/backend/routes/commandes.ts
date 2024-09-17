@@ -53,23 +53,24 @@ router.post("/commandes", (req, res) => {
             const insertHistoryPromises = products.map((product: any) => {
               return new Promise<void>((resolve, reject) => {
                 db.get(
-                  "SELECT * FROM products WHERE id = ?",
+                  "SELECT p.*, f.name as family_name FROM products p LEFT JOIN families f ON p.family_id = f.id WHERE p.id = ?",
                   [product.id],
-                  (err, row: { id: number; name: string; family_id: number; amount: number; unit: string; cost_price: number; selling_price: number }) => {
+                  (err, row: { id: number; name: string; family_id: number; family_name: string; amount: number; unit: string; cost_price: number; selling_price: number }) => {
                     if (err) {
                       return reject(err);
                     }
                     db.run(
                       `INSERT INTO commande_products_history 
-                      (commande_id, product_id, name, family_id, amount, unit, cost_price, selling_price, quantity) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                      (commande_id, product_id, name, family_id, family_name, amount, price, cost_price, selling_price, quantity) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                       [
                         commandeId,
                         row.id,
                         row.name,
                         row.family_id,
+                        row.family_name,
                         row.amount,
-                        row.unit,
+                        row.selling_price, // Use selling_price as the price
                         row.cost_price,
                         row.selling_price,
                         product.amount,
@@ -128,9 +129,8 @@ router.get("/commandes/:id/products", (req, res) => {
   const { id } = req.params;
 
   const query = `
-    SELECT cph.product_id, cph.name, cph.family_id, f.name as family_name, cph.amount, cph.unit, cph.cost_price, cph.selling_price, cph.quantity
+    SELECT cph.product_id, cph.name, cph.family_id, cph.family_name, cph.amount, cph.price, cph.cost_price, cph.selling_price, cph.quantity
     FROM commande_products_history cph
-    LEFT JOIN families f ON cph.family_id = f.id
     WHERE cph.commande_id = ?
   `;
 

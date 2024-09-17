@@ -32,7 +32,6 @@ type Product = {
   name: string;
   family_name: string;
   amount: number;
-  unit: string;
   cost_price: number;
   selling_price: number;
   quantity: number;
@@ -60,14 +59,14 @@ export function DetailDialog(transaction: Transaction) {
           <TableCell>{transaction.total_price}DA</TableCell>
         </TableRow>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Transaction Details</DialogTitle>
           <DialogDescription>
             Details for transaction ID: {transaction.id}
           </DialogDescription>
         </DialogHeader>
-        <div>
+        <div className="overflow-auto max-h-[400px]">
           {products.length > 0 ? (
             <Table>
               <TableHeader>
@@ -75,7 +74,8 @@ export function DetailDialog(transaction: Transaction) {
                   <TableHead>Product Name</TableHead>
                   <TableHead>Family Name</TableHead>
                   <TableHead>Quantity</TableHead>
-                  <TableHead>Unit</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Total</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -84,7 +84,10 @@ export function DetailDialog(transaction: Transaction) {
                     <TableCell>{product.name}</TableCell>
                     <TableCell>{product.family_name}</TableCell>
                     <TableCell>{product.quantity}</TableCell>
-                    <TableCell>{product.unit}</TableCell>
+                    <TableCell>{product.selling_price}DA</TableCell>
+                    <TableCell>
+                      {product.selling_price * product.quantity} DA
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

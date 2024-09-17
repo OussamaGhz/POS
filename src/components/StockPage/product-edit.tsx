@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -12,7 +12,6 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { z } from "zod";
-import { useNavigate } from "react-router-dom";
 import { Edit2 } from "lucide-react";
 
 const productSchema = z.object({
@@ -27,11 +26,12 @@ const productSchema = z.object({
 const EditProductDialog = ({
   product,
   families,
+  onProductUpdated,
 }: {
   product: any;
   families: any;
+  onProductUpdated: () => void;
 }) => {
-  const navigate = useNavigate();
 
   const [updatedProduct, setUpdatedProduct] = useState({
     name: product.name,
@@ -116,7 +116,7 @@ const EditProductDialog = ({
     })
       .then((res) => {
         if (res.ok) {
-          navigate(0);
+          onProductUpdated(); // Call the callback to update the products list
         } else {
           alert("Failed to update product:" + res);
         }

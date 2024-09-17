@@ -2,7 +2,6 @@ import express from "express";
 import productsRouter from "./routes/products";
 import familiesRouter from "./routes/families";
 import commandesRouter from "./routes/commandes";
-import router from "./routes/test";
 
 const app = express();
 const PORT = 8000;
@@ -16,7 +15,6 @@ app.get("/health", (req, res) => {
 });
 
 // Use routers
-app.use(router);
 app.use(productsRouter);
 app.use(familiesRouter);
 app.use(commandesRouter);

@@ -23,7 +23,7 @@ const familySchema = z.object({
   name: z.string().min(1, "Family name is required"),
 });
 
-const AddFamilyDialog: React.FC = () => {
+const AddFamilyDialog: React.FC<{ onFamilyUpdated: () => void }> = ({ onFamilyUpdated }) => {
   const [familyName, setFamilyName] = useState("");
   const [families, setFamilies] = useState<Family[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -58,6 +58,7 @@ const AddFamilyDialog: React.FC = () => {
           fetchFamilies();
           setFamilyName("");
           setError(null);
+          onFamilyUpdated(); // Call the callback to update the families list
         } else {
           console.error("Failed to add family:", res);
         }
@@ -72,6 +73,7 @@ const AddFamilyDialog: React.FC = () => {
       .then((res) => {
         if (res.ok) {
           fetchFamilies();
+          onFamilyUpdated(); // Call the callback to update the families list
         } else {
           alert("Failed to delete family:" + res);
         }

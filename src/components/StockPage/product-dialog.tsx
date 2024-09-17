@@ -24,7 +24,7 @@ const productSchema = z.object({
   sellingPrice: z.number().min(0, "Selling price must be a positive number"),
 });
 
-const AddProductDialog = () => {
+const AddProductDialog = ({ onProductAdded }: { onProductAdded: () => void }) => {
   const [newProduct, setNewProduct] = useState({
     name: "",
     family: "",
@@ -108,6 +108,7 @@ const AddProductDialog = () => {
           costPrice: "",
           sellingPrice: "",
         });
+        onProductAdded(); // Call the callback to update the products list
       })
       .catch((err) => alert(`Failed to add product: ${err}`));
 
@@ -119,8 +120,6 @@ const AddProductDialog = () => {
       costPrice: false,
       sellingPrice: false,
     });
-
-    
   };
 
   return (

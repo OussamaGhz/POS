@@ -40,8 +40,9 @@ CREATE TABLE commande_products_history (
     product_id INTEGER NOT NULL,
     name TEXT NOT NULL,
     family_id INTEGER,
+    family_name TEXT NOT NULL,
     amount REAL NOT NULL,
-    unit TEXT NOT NULL,
+    price REAL NOT NULL,
     cost_price REAL NOT NULL,
     selling_price REAL NOT NULL,
     quantity REAL NOT NULL,
@@ -57,4 +58,3 @@ CREATE TABLE commandes_history (
     total_price REAL NOT NULL,
     FOREIGN KEY (commande_id) REFERENCES commandes(id)
 );
-

@@ -2,6 +2,7 @@ import express from "express";
 import productsRouter from "./routes/products";
 import familiesRouter from "./routes/families";
 import commandesRouter from "./routes/commandes";
+import profitRouter from "./routes/profits";
 
 const app = express();
 const PORT = 8000;
@@ -18,6 +19,7 @@ app.get("/health", (req, res) => {
 app.use(productsRouter);
 app.use(familiesRouter);
 app.use(commandesRouter);
+app.use(profitRouter);
 
 export const startServer = () => {
   app.listen(PORT, () => {

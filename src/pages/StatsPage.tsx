@@ -29,6 +29,7 @@ const StatsPage = () => {
   const [dayProfit, setDayProfit] = useState(0);
   const [dayClients, setDayClients] = useState(0);
   const [monthProfit, setMonthProfit] = useState(0);
+  const [dailyExpenses, setDailyExpenses] = useState(0);
   const [commandes, setCommandes] = useState<Commande[]>([]);
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, "0");
@@ -80,6 +81,16 @@ const StatsPage = () => {
       .catch((error) => {
         alert("Failed to fetch commandes:" + error);
       });
+
+    //fetch profit
+    fetch("http://localhost:8000/daily-expenses")
+      .then((res) => res.json())
+      .then((data) => {
+        setDailyExpenses(data.daily_expenses);
+      })
+      .catch((error) => {
+        alert("Failed to fetch profits:" + error);
+      });
   }, []);
   return (
     <div className="p-4 space-y-4">
@@ -101,7 +112,7 @@ const StatsPage = () => {
         />
         <StatCard
           title="Daily Expenses"
-          value="$200"
+          value={`${dailyExpenses}DA`}
           icon={<ShoppingCart className="w-6 h-6 text-red-500" />}
         />
       </div>

@@ -13,7 +13,6 @@ import {
 import { Input } from "../ui/input";
 import { z } from "zod";
 import addProduct from "../../utils/AddProduct";
-import { useNavigate } from "react-router-dom";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
@@ -24,7 +23,13 @@ const productSchema = z.object({
   sellingPrice: z.number().min(0, "Selling price must be a positive number"),
 });
 
-const AddProductDialog = ({ onProductAdded }: { onProductAdded: () => void }) => {
+const AddProductDialog = ({
+  onProductAdded,
+  families,
+}: {
+  onProductAdded: () => void;
+  families: { id: number; name: string }[];
+}) => {
   const [newProduct, setNewProduct] = useState({
     name: "",
     family: "",
@@ -62,14 +67,6 @@ const AddProductDialog = ({ onProductAdded }: { onProductAdded: () => void }) =>
     setErrors((prev) => ({ ...prev, [name]: false }));
   };
 
-  // fetch families from the backend
-  const [families, setFamilies] = useState([]);
-  useEffect(() => {
-    fetch("http://localhost:8000/families")
-      .then((res) => res.json())
-      .then(setFamilies)
-      .catch((err) => console.error("Failed to fetch families:", err));
-  }, []);
 
   const handleSave = () => {
     const result = productSchema.safeParse({

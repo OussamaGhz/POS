@@ -125,7 +125,7 @@ const AddFamilyDialog: React.FC<{ onFamilyUpdated: () => void }> = ({ onFamilyUp
               onClick={() => {
                 setFamilyName("");
                 setError(null);
-                window.location.reload();
+              
               }}
             >
               Cancel

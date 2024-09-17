@@ -57,7 +57,7 @@ const StockPage = () => {
         <CardContent className="flex flex-col gap-4">
           <div className="flex w-full gap-3">
             <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-            <AddProductDialog onProductAdded={fetchProducts} />
+            <AddProductDialog onProductAdded={fetchProducts} families={families}/>
             <AddFamilyDialog onFamilyUpdated={fetchFamilies} />
           </div>
           <ProductTable products={filteredProducts} onProductUpdated={fetchProducts} />

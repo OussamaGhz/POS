@@ -11,6 +11,7 @@ import {
 import { Commande } from "../../pages/StatsPage";
 import { Button } from "../ui/button";
 import { ArrowUpDown } from "lucide-react";
+import { DetailDialog } from "./deatail-dialog";
 
 type Transaction = {
   id: number;
@@ -32,10 +33,11 @@ const Historique = ({ data }: HistoriqueProps) => {
   const [sortField, setSortField] = useState<"date" | "total_price">("date");
 
   useEffect(() => {
-    // sort by latest date and time
-    data.sort((a: Transaction, b: Transaction) => {
+    // sort by latest date 
+    data.sort((a, b) => {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
+    
 
     // split date and time
     const filteredData = data.map((transaction: Transaction) => {
@@ -145,13 +147,9 @@ const Historique = ({ data }: HistoriqueProps) => {
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="cursor-pointer">
             {currentTransactions.map((transaction) => (
-              <TableRow key={transaction.id}>
-                <TableCell className="font-medium">{transaction.time}</TableCell>
-                <TableCell>{transaction.date}</TableCell>
-                <TableCell>{transaction.total_price}DA</TableCell>
-              </TableRow>
+              <DetailDialog key={transaction.id} {...transaction} />
             ))}
           </TableBody>
         </Table>

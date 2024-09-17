@@ -50,22 +50,61 @@ router.post("/commandes", (req, res) => {
                 .json({ error: "Failed to link products to commande" });
             }
 
-            const updateProductAmounts = products.map((product: any) => {
+            const insertHistoryPromises = products.map((product: any) => {
               return new Promise<void>((resolve, reject) => {
-                db.run(
-                  "UPDATE products SET amount = amount - ? WHERE id = ?",
-                  [product.amount, product.id],
-                  (err) => {
+                db.get(
+                  "SELECT * FROM products WHERE id = ?",
+                  [product.id],
+                  (err, row: { id: number; name: string; family_id: number; amount: number; unit: string; cost_price: number; selling_price: number }) => {
                     if (err) {
                       return reject(err);
                     }
-                    resolve();
+                    db.run(
+                      `INSERT INTO commande_products_history 
+                      (commande_id, product_id, name, family_id, amount, unit, cost_price, selling_price, quantity) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                      [
+                        commandeId,
+                        row.id,
+                        row.name,
+                        row.family_id,
+                        row.amount,
+                        row.unit,
+                        row.cost_price,
+                        row.selling_price,
+                        product.amount,
+                      ],
+                      (err) => {
+                        if (err) {
+                          return reject(err);
+                        }
+                        resolve();
+                      }
+                    );
                   }
                 );
               });
             });
 
-            Promise.all(updateProductAmounts)
+            Promise.all(insertHistoryPromises)
+              .then(() => {
+                const updateProductAmounts = products.map((product: any) => {
+                  return new Promise<void>((resolve, reject) => {
+                    db.run(
+                      "UPDATE products SET amount = amount - ? WHERE id = ?",
+                      [product.amount, product.id],
+                      (err) => {
+                        if (err) {
+                          return reject(err);
+                        }
+                        resolve();
+                      }
+                    );
+                  });
+                });
+
+                return Promise.all(updateProductAmounts);
+              })
               .then(() => {
                 db.run("COMMIT");
                 res.status(201).json({ id: commandeId, total_price, products });
@@ -89,10 +128,10 @@ router.get("/commandes/:id/products", (req, res) => {
   const { id } = req.params;
 
   const query = `
-    SELECT p.id, p.name, p.family_id, p.amount, p.unit, p.cost_price, p.selling_price, cp.quantity
-    FROM products p
-    JOIN commande_products cp ON p.id = cp.product_id
-    WHERE cp.commande_id = ?
+    SELECT cph.product_id, cph.name, cph.family_id, f.name as family_name, cph.amount, cph.unit, cph.cost_price, cph.selling_price, cph.quantity
+    FROM commande_products_history cph
+    LEFT JOIN families f ON cph.family_id = f.id
+    WHERE cph.commande_id = ?
   `;
 
   db.all(query, [id], (err, rows) => {

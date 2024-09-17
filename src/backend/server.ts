@@ -2,7 +2,6 @@ import express from "express";
 import productsRouter from "./routes/products";
 import familiesRouter from "./routes/families";
 import commandesRouter from "./routes/commandes";
-import profitsRouter from "./routes/profits";
 import router from "./routes/test";
 
 const app = express();
@@ -21,7 +20,6 @@ app.use(router);
 app.use(productsRouter);
 app.use(familiesRouter);
 app.use(commandesRouter);
-app.use(profitsRouter);
 
 export const startServer = () => {
   app.listen(PORT, () => {

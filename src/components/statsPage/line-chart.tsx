@@ -25,8 +25,6 @@ interface LineChartComponentProps {
 }
 
 const LineChartComponent: React.FC<LineChartComponentProps> = ({ data }) => {
-  console.log(data);
-
   const chartdata = data.map((transaction) => {
     return {
       date: transaction.date.split(" ")[0],

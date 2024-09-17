@@ -41,7 +41,7 @@ const StatsPage = () => {
     // fetch commandes
     fetch("http://localhost:8000/commandes")
       .then((res) => res.json())
-      .then((data) => {        
+      .then((data) => {
         setCommandes(data);
 
         const transactions = data.map((transaction: Transaction) => {
@@ -80,10 +80,7 @@ const StatsPage = () => {
       .catch((error) => {
         alert("Failed to fetch commandes:" + error);
       });
-  }, []);  
-
-  console.log(commandes);
-  
+  }, []);
   return (
     <div className="p-4 space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import HistoriqueAll from "../components/statsPage/historique-all";
-import { set } from "zod";
+import PasswordPrompt from "../components/PasswordPrompt";// Import the PasswordPrompt component
 
 export interface Transaction {
   id: number;
@@ -25,21 +25,21 @@ export interface Commande {
 }
 
 const StatsPage = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]); // Ensure data is an array
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [dayProfit, setDayProfit] = useState(0);
   const [dayClients, setDayClients] = useState(0);
   const [monthProfit, setMonthProfit] = useState(0);
   const [dailyExpenses, setDailyExpenses] = useState(0);
   const [commandes, setCommandes] = useState<Commande[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // State to track authentication
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, "0");
-  const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
   const yyyy = today.getFullYear();
 
   const todayStr = yyyy + "-" + mm + "-" + dd;
 
-  useEffect(() => {
-    // fetch commandes
+  const fetchData = () => {
     fetch("http://localhost:8000/commandes")
       .then((res) => res.json())
       .then((data) => {
@@ -65,7 +65,6 @@ const StatsPage = () => {
         setDayProfit(profit);
         const nbClients = todayTransactions.length;
         setDayClients(nbClients);
-        // get the total profit of teh current month
         const monthTransactions = data.filter((transaction: Transaction) => {
           const transactionDate = transaction.date.split(" ")[0];
           return transactionDate.split("-")[1] === mm;
@@ -82,7 +81,6 @@ const StatsPage = () => {
         alert("Failed to fetch commandes:" + error);
       });
 
-    //fetch profit
     fetch("http://localhost:8000/daily-expenses")
       .then((res) => res.json())
       .then((data) => {
@@ -91,7 +89,27 @@ const StatsPage = () => {
       .catch((error) => {
         alert("Failed to fetch profits:" + error);
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchData();
+    }
+  }, [isAuthenticated]);
+
+  const handlePasswordSubmit = (password: string) => {
+    const correctPassword = "your_password"; // Replace with your actual password
+    if (password === correctPassword) {
+      setIsAuthenticated(true);
+    } else {
+      alert("Incorrect password. Please try again.");
+    }
+  };
+
+  if (!isAuthenticated) {
+    return <PasswordPrompt onPasswordSubmit={handlePasswordSubmit} />;
+  }
+
   return (
     <div className="p-4 space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -126,7 +144,7 @@ const StatsPage = () => {
           <LineChartComponent data={transactions} />
         </CardContent>
       </Card>
-      <HistoriqueAll data={commandes} />
+      <HistoriqueAll data={commandes} fetchData={fetchData} />
     </div>
   );
 };

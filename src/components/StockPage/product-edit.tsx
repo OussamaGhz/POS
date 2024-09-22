@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -32,7 +32,6 @@ const EditProductDialog = ({
   families: any;
   onProductUpdated: () => void;
 }) => {
-
   const [updatedProduct, setUpdatedProduct] = useState({
     name: product.name,
     family: product.family_id?.toString(),
@@ -105,7 +104,7 @@ const EditProductDialog = ({
       unit: result.data.unit,
       cost_price: result.data.cost_price,
       selling_price: result.data.selling_price,
-    }
+    };
 
     fetch(`http://localhost:8000/products/${product.id}`, {
       method: "PUT",
@@ -131,10 +130,14 @@ const EditProductDialog = ({
       cost_price: false,
       selling_price: false,
     });
+
+    setOpen(false); // Close the modal after saving
   };
 
+  const [open, setOpen] = useState(false); // State for modal visibility
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">
           <Edit2 className="w-5 h-5" />
@@ -237,6 +240,7 @@ const EditProductDialog = ({
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
+
           <Button onClick={handleSave}>Save Changes</Button>
         </DialogFooter>
       </DialogContent>

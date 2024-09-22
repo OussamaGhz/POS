@@ -6,7 +6,6 @@ import {
   TableRow,
   TableHead,
   TableBody,
-  TableCell,
 } from "../ui/table";
 import { Commande } from "../../pages/StatsPage";
 import { Button } from "../ui/button";
@@ -22,9 +21,10 @@ type Transaction = {
 
 interface HistoriqueProps {
   data: Commande[];
+  fetchData: () => void;
 }
 
-const Historique = ({ data }: HistoriqueProps) => {
+const HistoriqueAll = ({ data, fetchData }: HistoriqueProps) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(4);
@@ -33,13 +33,10 @@ const Historique = ({ data }: HistoriqueProps) => {
   const [sortField, setSortField] = useState<"date" | "total_price">("date");
 
   useEffect(() => {
-    // sort by latest date 
     data.sort((a, b) => {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
-    
 
-    // split date and time
     const filteredData = data.map((transaction: Transaction) => {
       const date = new Date(transaction.date);
       return {
@@ -60,6 +57,21 @@ const Historique = ({ data }: HistoriqueProps) => {
   const handleSortOrderChange = (field: "date" | "total_price") => {
     setSortField(field);
     setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await fetch(`http://localhost:8000/commandes/${id}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        fetchData();
+      } else {
+        console.error("Failed to delete commande");
+      }
+    } catch (error) {
+      console.error("Failed to delete commande:", error);
+    }
   };
 
   const filteredTransactions = transactions.filter((transaction) => {
@@ -115,7 +127,7 @@ const Historique = ({ data }: HistoriqueProps) => {
         </div>
       </CardHeader>
       <CardContent className="flex-col h-full">
-        <Table className="">
+        <Table>
           <TableHeader className="font-bold">
             <TableRow>
               <TableHead className="max-w-[150px]">Time</TableHead>
@@ -145,11 +157,16 @@ const Historique = ({ data }: HistoriqueProps) => {
                   </Button>
                 </div>
               </TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="cursor-pointer">
             {currentTransactions.map((transaction) => (
-              <DetailDialog key={transaction.id} {...transaction} />
+              <DetailDialog
+                key={transaction.id}
+                {...transaction}
+                handleDelete={handleDelete}
+              />
             ))}
           </TableBody>
         </Table>
@@ -160,7 +177,10 @@ const Historique = ({ data }: HistoriqueProps) => {
           <span>
             Page {currentPage} of {totalPages}
           </span>
-          <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+          <Button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
             Next
           </Button>
         </div>
@@ -169,4 +189,4 @@ const Historique = ({ data }: HistoriqueProps) => {
   );
 };
 
-export default Historique;
+export default HistoriqueAll;

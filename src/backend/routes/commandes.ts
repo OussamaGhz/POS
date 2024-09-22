@@ -55,7 +55,19 @@ router.post("/commandes", (req, res) => {
                 db.get(
                   "SELECT p.*, f.name as family_name FROM products p LEFT JOIN families f ON p.family_id = f.id WHERE p.id = ?",
                   [product.id],
-                  (err, row: { id: number; name: string; family_id: number; family_name: string; amount: number; unit: string; cost_price: number; selling_price: number }) => {
+                  (
+                    err,
+                    row: {
+                      id: number;
+                      name: string;
+                      family_id: number;
+                      family_name: string;
+                      amount: number;
+                      unit: string;
+                      cost_price: number;
+                      selling_price: number;
+                    }
+                  ) => {
                     if (err) {
                       return reject(err);
                     }
@@ -141,6 +153,63 @@ router.get("/commandes/:id/products", (req, res) => {
     } else {
       res.json(rows);
     }
+  });
+});
+
+router.delete("/commandes/:id", (req, res) => {
+  const { id } = req.params;
+
+  // Step 1: Retrieve the products and their quantities associated with the command
+  const getProductsQuery = `
+    SELECT product_id, quantity 
+    FROM commande_products 
+    WHERE commande_id = ?
+  `;
+
+  db.all(getProductsQuery, [id], (err, products) => {
+    if (err) {
+      console.error("Failed to get products for commande:", err);
+      return res
+        .status(500)
+        .json({ error: "Failed to get products for commande" });
+    }
+
+    // Step 2: Update the product amounts to add back the quantities from the deleted command
+    const updateProductAmounts = products.map(
+      (product: { product_id: number; quantity: number }) => {
+        return new Promise<void>((resolve, reject) => {
+          db.run(
+            "UPDATE products SET amount = amount + ? WHERE id = ?",
+            [product.quantity, product.product_id],
+            (err) => {
+              if (err) {
+                return reject(err);
+              }
+              resolve();
+            }
+          );
+        });
+      }
+    );
+
+    Promise.all(updateProductAmounts)
+      .then(() => {
+        // Step 3: Delete the command
+        const deleteCommandQuery = "DELETE FROM commandes WHERE id = ?";
+
+        db.run(deleteCommandQuery, [id], (err) => {
+          if (err) {
+            console.error("Failed to delete commande:", err);
+            return res.status(500).json({ error: "Failed to delete commande" });
+          } else {
+            res.json({ id });
+          }
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to update product amounts:", err);
+        res.status(500).json({ error: "Failed to update product amounts" });
+      });
   });
 });
 

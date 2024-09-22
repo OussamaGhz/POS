@@ -20,6 +20,7 @@ const createWindow = (): void => {
 
   // Create the browser window to fit the full screen dimensions with the taskbar visible.
   const mainWindow = new BrowserWindow({
+    icon: "src/logo.png",
     width, // Set width to the screen's width
     height, // Set height to the screen's height
     webPreferences: {

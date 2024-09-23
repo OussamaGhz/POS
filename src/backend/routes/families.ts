@@ -46,5 +46,4 @@ router.delete("/families/:id", (req, res) => {
   });
 });
 
-
 export default router;

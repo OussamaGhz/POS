@@ -1,6 +1,6 @@
 {
-  "name": "my-new-app",
-  "productName": "my-new-app",
+  "name": "gelato-bak",
+  "productName": "Gelato Bak",
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": ".webpack/main",

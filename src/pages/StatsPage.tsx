@@ -98,7 +98,7 @@ const StatsPage = () => {
   }, [isAuthenticated]);
 
   const handlePasswordSubmit = (password: string) => {
-    const correctPassword = "your_password"; // Replace with your actual password
+    const correctPassword = "az"; // Replace with your actual password
     if (password === correctPassword) {
       setIsAuthenticated(true);
     } else {

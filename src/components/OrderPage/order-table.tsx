@@ -17,6 +17,7 @@ import {
   decrementQuantity,
   deleteProduct,
 } from "@/src/store/cartSlice";
+import AlertDialog from "../../AlertDialog";
 
 type props = {
   products: {
@@ -29,16 +30,31 @@ type props = {
 };
 
 const OrderTable = (props: props) => {
-  const [stockPorudcts, setProducts] = useState([]);
+  const [stockProducts, setProducts] = useState([]);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescription, setAlertDescription] = useState("");
+
+  const dispatch = useDispatch();
+
   // fetch data
   useEffect(() => {
     fetch("http://localhost:8000/products")
       .then((res) => res.json())
       .then((data) => setProducts(data))
-      .catch((err) => alert(`Failed to fetch products: ${err}`));
+      .catch((err) => showAlert("Failed to fetch products", err.message));
   }, []);
 
-  const dispatch = useDispatch();
+  const showAlert = (title: string, description: string) => {
+    setAlertTitle(title);
+    setAlertDescription(description);
+    setIsAlertOpen(true);
+  };
+
+  const handleAlertClose = () => {
+    setIsAlertOpen(false);
+  };
+
   return (
     <div className="h-full border-b-2 overflow-scroll">
       <Table className="">
@@ -80,10 +96,10 @@ const OrderTable = (props: props) => {
                   size="icon"
                   className="h-8 w-8"
                   onClick={() => {
-                    stockPorudcts.map((p: any) => {
+                    stockProducts.map((p: any) => {
                       if (p.id === product.id) {
                         if (p.amount <= product.amount) {
-                          alert("Product is out of stock");
+                          showAlert("Out of Stock", "Product is out of stock");
                           return;
                         } else {
                           dispatch(incrementQuantity(product.id));
@@ -114,6 +130,13 @@ const OrderTable = (props: props) => {
           ))}
         </TableBody>
       </Table>
+
+      <AlertDialog
+        isOpen={isAlertOpen}
+        onClose={handleAlertClose}
+        title={alertTitle}
+        description={alertDescription}
+      />
     </div>
   );
 };

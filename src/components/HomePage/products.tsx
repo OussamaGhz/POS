@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Search, List, ShoppingCart } from "lucide-react";
 import { addProduct } from "@/src/store/cartSlice";
 import { RootState } from "@/src/store/store";
+import AlertDialog from "../../AlertDialog";
 
 type Product = {
   id: string;
@@ -20,8 +21,12 @@ type Product = {
 const ProductSearch = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFamily, setSelectedFamily] = useState("All");
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescription, setAlertDescription] = useState("");
   const dispatch = useDispatch();
   const [products, setProducts] = useState([]);
+  
   useEffect(() => {
     fetch("http://localhost:8000/products")
       .then((response) => response.json())
@@ -30,7 +35,7 @@ const ProductSearch = () => {
         data = data.filter((product: any) => product.amount > 0);
         setProducts(data);
       })
-      .catch((error) => alert(error));
+      .catch((error) => showAlert("Error", error.message));
   }, []);
 
   const cartProducts = useSelector((state: RootState) => state.cart.products);
@@ -56,6 +61,17 @@ const ProductSearch = () => {
       })
     );
   };
+
+  const showAlert = (title: string, description: string) => {
+    setAlertTitle(title);
+    setAlertDescription(description);
+    setIsAlertOpen(true);
+  };
+
+  const handleAlertClose = () => {
+    setIsAlertOpen(false);
+  };
+
   return (
     <Card className="w-full h-full flex flex-col gap-4 py-2 overflow-auto">
       <CardHeader>
@@ -125,7 +141,7 @@ const ProductSearch = () => {
                           });
                           return;
                         } else {
-                          alert("Product is out of stock");
+                          showAlert("Out of Stock", "Product is out of stock");
                         }
                       }
                     }}
@@ -140,6 +156,13 @@ const ProductSearch = () => {
           </div>
         </div>
       </CardContent>
+
+      <AlertDialog
+        isOpen={isAlertOpen}
+        onClose={handleAlertClose}
+        title={alertTitle}
+        description={alertDescription}
+      />
     </Card>
   );
 };

@@ -10,6 +10,7 @@ import {
 } from "../ui/table";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
+import { DetailDialogPrint } from "../DetailDialogPrint";
 
 type Transaction = {
   id: number;
@@ -19,7 +20,8 @@ type Transaction = {
 };
 
 const Historique = () => {
-  const [transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+
   useEffect(() => {
     fetch("http://localhost:8000/commandes")
       .then((res) => res.json())
@@ -42,7 +44,7 @@ const Historique = () => {
       .catch((error) => {
         alert("Failed to fetch commandes:" + error);
       });
-  }, []);  
+  }, []);
 
   return (
     <Card className="">
@@ -57,9 +59,9 @@ const Historique = () => {
           <TableHeader className="font-bold">
             <TableRow>
               <TableHead className="max-w-[150px]">Time</TableHead>
-
               <TableHead>Date</TableHead>
               <TableHead>Total Price</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -68,9 +70,16 @@ const Historique = () => {
                 <TableCell className="font-medium">
                   {transaction.time}
                 </TableCell>
-
                 <TableCell>{transaction.date}</TableCell>
                 <TableCell>{transaction.total_price}DA</TableCell>
+                <TableCell>
+                  <DetailDialogPrint
+                    id={transaction.id}
+                    date={transaction.date}
+                    time={transaction.time}
+                    total_price={transaction.total_price}
+                  />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

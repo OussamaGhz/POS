@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Dialog,
   DialogTrigger,
@@ -96,6 +96,27 @@ const AddFamilyDialog: React.FC<{ onFamilyUpdated: () => void }> = ({
         setFamilyToDelete(null);
       });
   };
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === "Enter" && isConfirmationOpen) {
+        confirmDelete();
+      }
+    },
+    [isConfirmationOpen, confirmDelete]
+  );
+
+  useEffect(() => {
+    if (isConfirmationOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    } else {
+      window.removeEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isConfirmationOpen, handleKeyDown]);
 
   return (
     <>

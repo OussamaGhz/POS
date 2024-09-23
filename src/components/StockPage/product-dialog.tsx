@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -66,7 +66,6 @@ const AddProductDialog = ({
     const { name } = e.target;
     setErrors((prev) => ({ ...prev, [name]: false }));
   };
-
 
   const handleSave = () => {
     const result = productSchema.safeParse({

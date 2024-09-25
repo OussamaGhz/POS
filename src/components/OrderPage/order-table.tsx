@@ -57,9 +57,9 @@ const OrderTable = (props: props) => {
 
   return (
     <div className="h-full border-b-2 overflow-scroll">
-      <Table className="">
+      <Table className="overscroll-auto">
         <TableHeader className="font-bold">
-          <TableRow>
+          <TableRow >
             <TableHead className="w-[100px]">Item</TableHead>
             <TableHead className="w-[50px]">Price</TableHead>
             <TableHead className="w-[50px]">Quantity</TableHead>
@@ -74,7 +74,7 @@ const OrderTable = (props: props) => {
               <TableCell className="w-[50px] font-medium">
                 {product.selling_price}DA
               </TableCell>
-              <TableCell className="w-[50px] flex items-center gap-2">
+              <TableCell className=" flex items-center gap-2 ">
                 <Button
                   variant="outline"
                   size="icon"
@@ -88,7 +88,7 @@ const OrderTable = (props: props) => {
                 <Input
                   type="text"
                   value={product.amount}
-                  className="w-20 text-center"
+                  className="w-10 text-center"
                   readOnly
                 />
                 <Button

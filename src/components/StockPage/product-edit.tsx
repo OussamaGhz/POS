@@ -32,15 +32,23 @@ const EditProductDialog = ({
   families: any;
   onProductUpdated: () => void;
 }) => {
+  const getFamilyId = (familyName: string) => {
+    const family = families.find((family: any) => family.name === familyName);
+    return family ? family.id : "";
+  };
+
   const [updatedProduct, setUpdatedProduct] = useState({
     name: product.name,
-    family: product.family_id?.toString(),
+    family: getFamilyId(product.family_name) || "",
     amount: product.amount?.toString(),
+    family_name: product.family_name,
     unit: product.unit,
     customUnit: "",
     cost_price: product.cost_price?.toString(),
     selling_price: product.selling_price?.toString(),
   });
+
+  console.log(product);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -59,7 +67,14 @@ const EditProductDialog = ({
   };
 
   const handleFamilyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setUpdatedProduct((prev) => ({ ...prev, family: e.target.value }));
+    const selectedFamily = families.find(
+      (family: any) => family.id.toString() === e.target.value
+    );
+    setUpdatedProduct((prev) => ({
+      ...prev,
+      family: e.target.value,
+      family_name: selectedFamily ? selectedFamily.name : "",
+    }));
   };
 
   const handleFocus = (
@@ -70,6 +85,8 @@ const EditProductDialog = ({
   };
 
   const handleSave = () => {
+    console.log(updatedProduct);
+
     const result = productSchema.safeParse({
       ...updatedProduct,
       amount: parseFloat(updatedProduct.amount),
@@ -170,7 +187,6 @@ const EditProductDialog = ({
               errors.family ? "border-red-500" : ""
             }`}
           >
-            <option value="">Select Family</option>
             {families.map((family: any) => (
               <option key={family.id} value={family.id}>
                 {family.name}

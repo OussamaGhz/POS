@@ -24,8 +24,14 @@ const familySchema = z.object({
   name: z.string().min(1, "Family name is required"),
 });
 
-const AddFamilyDialog: React.FC<{ onFamilyUpdated: () => void }> = ({
+interface props {
+  onFamilyUpdated: () => void;
+  onProductAdded: () => void;
+}
+
+const AddFamilyDialog: React.FC<props> = ({
   onFamilyUpdated,
+  onProductAdded,
 }) => {
   const [familyName, setFamilyName] = useState("");
   const [families, setFamilies] = useState<Family[]>([]);
@@ -86,6 +92,7 @@ const AddFamilyDialog: React.FC<{ onFamilyUpdated: () => void }> = ({
         if (res.ok) {
           fetchFamilies();
           onFamilyUpdated(); // Call the callback to update the families list
+          onProductAdded();
         } else {
           alert("Failed to delete family:" + res);
         }

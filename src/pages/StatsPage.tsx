@@ -9,7 +9,8 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import HistoriqueAll from "../components/statsPage/historique-all";
-import PasswordPrompt from "../components/PasswordPrompt";// Import the PasswordPrompt component
+import PasswordPrompt from "../components/PasswordPrompt"; // Import the PasswordPrompt component
+import AlertDialog from "../AlertDialog";
 
 export interface Transaction {
   id: number;
@@ -32,6 +33,7 @@ const StatsPage = () => {
   const [dailyExpenses, setDailyExpenses] = useState(0);
   const [commandes, setCommandes] = useState<Commande[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false); // State to track authentication
+  const [alertMessage, setAlertMessage] = useState<string | null>(null); // State for alert message
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, "0");
   const mm = String(today.getMonth() + 1).padStart(2, "0");
@@ -40,35 +42,28 @@ const StatsPage = () => {
   const todayStr = yyyy + "-" + mm + "-" + dd;
 
   const fetchData = () => {
+    // daily profit
     fetch("http://localhost:8000/commandes")
       .then((res) => res.json())
       .then((data) => {
         setCommandes(data);
 
-        const transactions = data.map((transaction: Transaction) => {
-          return {
-            ...transaction,
-            date: transaction.date.split(" ")[0],
-          };
-        });
         setTransactions(transactions);
         const todayTransactions = data.filter((transaction: Transaction) => {
           const transactionDate = transaction.date.split(" ")[0];
           return transactionDate === todayStr;
         });
-        const profit = todayTransactions.reduce(
-          (acc: number, transaction: Transaction) => {
-            return acc + transaction.total_price;
-          },
-          0
-        );
-        setDayProfit(profit);
+      
+        // daily clients
         const nbClients = todayTransactions.length;
         setDayClients(nbClients);
+        
+        // monthly profit
         const monthTransactions = data.filter((transaction: Transaction) => {
           const transactionDate = transaction.date.split(" ")[0];
           return transactionDate.split("-")[1] === mm;
         });
+
         const monthProfit = monthTransactions.reduce(
           (acc: number, transaction: Transaction) => {
             return acc + transaction.total_price;
@@ -78,16 +73,27 @@ const StatsPage = () => {
         setMonthProfit(monthProfit);
       })
       .catch((error) => {
-        alert("Failed to fetch commandes:" + error);
+        setAlertMessage("Failed to fetch commandes: " + error);
       });
 
+    // daily profit
+    fetch("http://localhost:8000/daily-profit")
+      .then((res) => res.json())
+      .then((data) => {
+        setDayProfit(data.daily_profit);
+      })
+      .catch((error) => {
+        setAlertMessage("Failed to fetch profits: " + error);
+      });
+
+    // daily expenses
     fetch("http://localhost:8000/daily-expenses")
       .then((res) => res.json())
       .then((data) => {
         setDailyExpenses(data.daily_expenses);
       })
       .catch((error) => {
-        alert("Failed to fetch profits:" + error);
+        setAlertMessage("Failed to fetch expenses: " + error);
       });
   };
 
@@ -102,8 +108,12 @@ const StatsPage = () => {
     if (password === correctPassword) {
       setIsAuthenticated(true);
     } else {
-      alert("Incorrect password. Please try again.");
+      setAlertMessage("Incorrect password. Please try again.");
     }
+  };
+
+  const closeAlert = () => {
+    setAlertMessage(null);
   };
 
   if (!isAuthenticated) {
@@ -112,6 +122,14 @@ const StatsPage = () => {
 
   return (
     <div className="p-4 space-y-4">
+      {alertMessage && (
+        <AlertDialog
+          isOpen={!!alertMessage}
+          onClose={closeAlert}
+          title="Error"
+          description={alertMessage}
+        />
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Daily Profit"

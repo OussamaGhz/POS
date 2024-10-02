@@ -28,24 +28,24 @@ const LineChartComponent: React.FC<LineChartComponentProps> = ({ data }) => {
   const chartdata = data.map((transaction) => {
     return {
       date: transaction.date.split(" ")[0],
-      total_price: transaction.total_price,
+      Profit: transaction.total_price,
     };
   });
 
   // Group transactions by date and calculate total price for each day
-  const result = chartdata.reduce((acc: Record<string, number>, { date, total_price }) => {
+  const result = chartdata.reduce((acc: Record<string, number>, { date, Profit }) => {
     if (!acc[date]) {
       acc[date] = 0; // Initialize the total price for the date if not present
     }
-    acc[date] += total_price; // Add the total price of the current transaction
+    acc[date] += Profit; // Add the total price of the current transaction
     return acc;
   }, {});  
 
   // Format the result into an array of objects
-  const formattedResult = Object.entries(result).map(([date, total_price]) => ({
+  const formattedResult = Object.entries(result).map(([date, Profit]) => ({
     // date without the year
     date: date.split("-").slice(1).join("-"),  
-    total_price,
+    Profit,
   }));
 
   // get at most the last 10 days
@@ -63,7 +63,7 @@ const LineChartComponent: React.FC<LineChartComponentProps> = ({ data }) => {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="total_price" stroke="#8884d8" />
+          <Line type="monotone" dataKey="Profit" stroke="#8884d8" />
         </LineChart>
       </ResponsiveContainer>
    

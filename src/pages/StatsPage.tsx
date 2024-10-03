@@ -11,6 +11,7 @@ import {
 import HistoriqueAll from "../components/statsPage/historique-all";
 import PasswordPrompt from "../components/PasswordPrompt"; // Import the PasswordPrompt component
 import AlertDialog from "../AlertDialog";
+import MonthlyReportDialog from "../components/statsPage/MonthlyReportDialog"; // Import the MonthlyReportDialog component
 
 export interface Transaction {
   id: number;
@@ -34,6 +35,9 @@ const StatsPage = () => {
   const [commandes, setCommandes] = useState<Commande[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false); // State to track authentication
   const [alertMessage, setAlertMessage] = useState<string | null>(null); // State for alert message
+  const [isMonthlyReportOpen, setIsMonthlyReportOpen] = useState(false); // State for monthly report dialog
+  const [monthlyReport, setMonthlyReport] = useState<Transaction[]>([]); // State for monthly report data
+
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, "0");
   const mm = String(today.getMonth() + 1).padStart(2, "0");
@@ -53,11 +57,11 @@ const StatsPage = () => {
           const transactionDate = transaction.date.split(" ")[0];
           return transactionDate === todayStr;
         });
-      
+
         // daily clients
         const nbClients = todayTransactions.length;
         setDayClients(nbClients);
-        
+
         // monthly profit
         const monthTransactions = data.filter((transaction: Transaction) => {
           const transactionDate = transaction.date.split(" ")[0];
@@ -97,6 +101,18 @@ const StatsPage = () => {
       });
   };
 
+  const fetchMonthlyReport = () => {
+    fetch("http://localhost:8000/monthly-report")
+      .then((res) => res.json())
+      .then((data) => {
+        setMonthlyReport(data);
+        setIsMonthlyReportOpen(true);
+      })
+      .catch((error) => {
+        setAlertMessage("Failed to fetch monthly report: " + error);
+      });
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchData();
@@ -114,6 +130,10 @@ const StatsPage = () => {
 
   const closeAlert = () => {
     setAlertMessage(null);
+  };
+
+  const closeMonthlyReport = () => {
+    setIsMonthlyReportOpen(false);
   };
 
   if (!isAuthenticated) {
@@ -141,11 +161,15 @@ const StatsPage = () => {
           value={dayClients}
           icon={<Users className="w-6 h-6 text-blue-500" />}
         />
-        <StatCard
-          title="Monthly Profit"
-          value={`${monthProfit}DA`}
-          icon={<TrendingUp className="w-6 h-6 text-purple-500" />}
-        />
+        <div onClick={fetchMonthlyReport} className="hover:cursor-pointer">
+          <StatCard
+            title="Monthly Profit"
+            value={`${monthProfit}DA`}
+            icon={<TrendingUp className="w-6 h-6 text-purple-500" />}
+            // Open monthly report dialog on click
+          />
+        </div>
+
         <StatCard
           title="Daily Expenses"
           value={`${dailyExpenses}DA`}
@@ -163,6 +187,10 @@ const StatsPage = () => {
         </CardContent>
       </Card>
       <HistoriqueAll data={commandes} fetchData={fetchData} />
+      <MonthlyReportDialog
+        isOpen={isMonthlyReportOpen}
+        onClose={closeMonthlyReport}
+      />
     </div>
   );
 };

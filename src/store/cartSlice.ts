@@ -4,6 +4,7 @@ type Product = {
   id: string;
   name: string;
   selling_price: number;
+  family_cost: number;
   amount: number;
   total: number;
 };
@@ -26,9 +27,16 @@ const cartSlice = createSlice({
       );
       if (existingProduct) {
         existingProduct.amount += action.payload.amount;
-        existingProduct.total += action.payload.total;
+        existingProduct.total +=
+          action.payload.amount *
+          (action.payload.selling_price + action.payload.family_cost);
       } else {
-        state.products.push(action.payload);
+        state.products.push({
+          ...action.payload,
+          total:
+            action.payload.amount *
+            (action.payload.selling_price + action.payload.family_cost),
+        });
       }
     },
     incrementQuantity: (state, action: PayloadAction<string>) => {
@@ -37,7 +45,7 @@ const cartSlice = createSlice({
       );
       if (product) {
         product.amount += 1;
-        product.total += product.selling_price;
+        product.total += product.selling_price + product.family_cost;
       }
     },
     decrementQuantity: (state, action: PayloadAction<string>) => {
@@ -48,7 +56,7 @@ const cartSlice = createSlice({
         const product = state.products[productIndex];
         if (product.amount > 1) {
           product.amount -= 1;
-          product.total -= product.selling_price;
+          product.total -= product.selling_price + product.family_cost;
         } else {
           state.products.splice(productIndex, 1);
         }
@@ -62,7 +70,11 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addProduct, incrementQuantity, decrementQuantity, deleteProduct } =
-  cartSlice.actions;
+export const {
+  addProduct,
+  incrementQuantity,
+  decrementQuantity,
+  deleteProduct,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

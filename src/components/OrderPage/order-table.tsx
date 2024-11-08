@@ -24,6 +24,7 @@ type props = {
     id: string;
     name: string;
     selling_price: number;
+    family_cost: number;
     amount: number;
     total: number;
   }[];
@@ -45,6 +46,8 @@ const OrderTable = (props: props) => {
       .catch((err) => showAlert("Failed to fetch products", err.message));
   }, []);
 
+  console.log(stockProducts);
+
   const showAlert = (title: string, description: string) => {
     setAlertTitle(title);
     setAlertDescription(description);
@@ -59,9 +62,10 @@ const OrderTable = (props: props) => {
     <div className="h-full border-b-2 overflow-scroll">
       <Table className="overscroll-auto">
         <TableHeader className="font-bold">
-          <TableRow >
+          <TableRow>
             <TableHead className="w-[100px]">Item</TableHead>
             <TableHead className="w-[50px]">Price</TableHead>
+            <TableHead className="w-[50px]">Family Cost</TableHead>
             <TableHead className="w-[50px]">Quantity</TableHead>
             <TableHead className="w-[100px] text-center">Total</TableHead>
             <TableHead className="w-[25px]" />
@@ -73,6 +77,9 @@ const OrderTable = (props: props) => {
               <TableCell className="w-[100px]">{product.name}</TableCell>
               <TableCell className="w-[50px] font-medium">
                 {product.selling_price}DA
+              </TableCell>
+              <TableCell className="w-[50px] font-medium">
+                {product.family_cost}DA
               </TableCell>
               <TableCell className=" flex items-center gap-2 ">
                 <Button
@@ -103,7 +110,7 @@ const OrderTable = (props: props) => {
                           return;
                         } else {
                           dispatch(incrementQuantity(product.id));
-                        }
+                        } 
                       }
                     });
                   }}

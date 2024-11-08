@@ -5,7 +5,7 @@ const router = Router();
 
 router.get("/products", (req, res) => {
   db.all(
-    "SELECT products.id,products.name,families.name AS family_name,products.amount,products.unit,products.cost_price,products.selling_price FROM products LEFT JOIN families ON products.family_id = families.id;",
+    "SELECT products.id,products.name,families.name AS family_name, families.cost AS family_cost,products.amount,products.unit,products.cost_price,products.selling_price FROM products LEFT JOIN families ON products.family_id = families.id;",
     [],
     (err, rows) => {
       if (err) {
@@ -35,7 +35,7 @@ router.get("/products/:id", (req, res) => {
 router.post("/products", (req, res) => {
   const { name, family_id, amount, unit, cost_price, selling_price } = req.body;
   console.log(family_id);
-  
+
   db.run(
     "INSERT INTO products (name, family_id, amount, unit, cost_price, selling_price) VALUES (?, ?, ?, ?, ?, ?)",
     [name, family_id, amount, unit, cost_price, selling_price],
@@ -44,17 +44,15 @@ router.post("/products", (req, res) => {
         console.error("Failed to create product:", err);
         res.status(500).json({ error: "Failed to create product" });
       } else {
-        res
-          .status(201)
-          .json({
-            id: this.lastID,
-            name,
-            family_id,
-            amount,
-            unit,
-            cost_price,
-            selling_price,
-          });
+        res.status(201).json({
+          id: this.lastID,
+          name,
+          family_id,
+          amount,
+          unit,
+          cost_price,
+          selling_price,
+        });
       }
     }
   );
@@ -63,7 +61,7 @@ router.post("/products", (req, res) => {
 router.put("/products/:id", (req, res) => {
   const { id } = req.params;
   console.log(req.body);
-  
+
   const { name, family_id, amount, unit, cost_price, selling_price } = req.body;
   db.run(
     "UPDATE products SET name = ?, family_id = ?, amount = ?, unit = ?, cost_price = ?, selling_price = ? WHERE id = ?",
@@ -93,18 +91,20 @@ router.put("/products/:id", (req, res) => {
 router.put("/products/:id/amount", (req, res) => {
   const { id } = req.params;
   const { amount } = req.body;
-  db.run("UPDATE products SET amount = ? WHERE id = ?", [amount, id], function (
-    err
-  ) {
-    if (err) {
-      console.error("Failed to update product amount:", err);
-      res.status(500).json({ error: "Failed to update product amount" });
-    } else if (this.changes === 0) {
-      res.status(404).json({ message: "Product not found" });
-    } else {
-      res.json({ id, amount });
+  db.run(
+    "UPDATE products SET amount = ? WHERE id = ?",
+    [amount, id],
+    function (err) {
+      if (err) {
+        console.error("Failed to update product amount:", err);
+        res.status(500).json({ error: "Failed to update product amount" });
+      } else if (this.changes === 0) {
+        res.status(404).json({ message: "Product not found" });
+      } else {
+        res.json({ id, amount });
+      }
     }
-  });
+  );
 });
 
 router.delete("/products/:id", (req, res) => {

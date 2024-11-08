@@ -1,7 +1,7 @@
 -- Table for product families
 CREATE TABLE families (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL
+    cost REAL NOT NULL
 );
 
 -- Table for products

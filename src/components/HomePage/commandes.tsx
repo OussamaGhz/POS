@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Card,
   CardHeader,
@@ -12,12 +12,12 @@ import { Button } from "../ui/button";
 import Total from "./total";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
+import { CalculatorDialog } from "./calculator";
 
 const Commandes = () => {
- 
   const products = useSelector((state: RootState) => state.cart.products);
-  console.log("products", products);  
-
+  console.log(products);
+  
 
   const validOrder = () => {
     // get total price
@@ -78,12 +78,20 @@ const Commandes = () => {
           <div className="flex flex-col md:flex-row justify-between items-center h-[20%] font-bold text-2xl md:text-4xl">
             {/* Total */}
             <Total />
-            <Button
-              className=" text-xl md:text-2xl font-semibold"
-              onClick={validOrder}
-            >
-              Valider
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                className=" text-xl md:text-2xl font-semibold "
+                variant="outline"
+              >
+                <CalculatorDialog />
+              </Button>
+              <Button
+                className=" text-xl md:text-2xl font-semibold"
+                onClick={validOrder}
+              >
+                Valider
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -18,10 +18,12 @@ import ConfirmationDialog from "../../ConfirmationDialog";
 interface Family {
   id: number;
   name: string;
+  cost: number;
 }
 
 const familySchema = z.object({
   name: z.string().min(1, "Family name is required"),
+  cost: z.number().min(0, "Cost must be a positive number"),
 });
 
 interface props {
@@ -36,6 +38,7 @@ const AddFamilyDialog: React.FC<props> = ({
   const [familyName, setFamilyName] = useState("");
   const [families, setFamilies] = useState<Family[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [familyCost, setFamilyCost] = useState<number | "">("");
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [familyToDelete, setFamilyToDelete] = useState<number | null>(null);
 
@@ -51,7 +54,10 @@ const AddFamilyDialog: React.FC<props> = ({
   };
 
   const handleSave = () => {
-    const result = familySchema.safeParse({ name: familyName });
+    const result = familySchema.safeParse({
+      name: familyName,
+      cost: familyCost,
+    });
     if (!result.success) {
       setError(result.error.errors[0].message);
       return;
@@ -62,12 +68,13 @@ const AddFamilyDialog: React.FC<props> = ({
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name: familyName }),
+      body: JSON.stringify({ name: familyName, cost: familyCost }),
     })
       .then((res) => {
         if (res.ok) {
           fetchFamilies();
           setFamilyName("");
+          setFamilyCost("");
           setError(null);
           onFamilyUpdated(); // Call the callback to update the families list
         } else {
@@ -92,6 +99,7 @@ const AddFamilyDialog: React.FC<props> = ({
         if (res.ok) {
           fetchFamilies();
           onFamilyUpdated(); // Call the callback to update the families list
+          setFamilyCost("");
           onProductAdded();
         } else {
           alert("Failed to delete family:" + res);
@@ -162,6 +170,13 @@ const AddFamilyDialog: React.FC<props> = ({
             placeholder="New Family Name"
             value={familyName}
             onChange={(e) => setFamilyName(e.target.value)}
+          />
+          {error && <p className="text-red-500">{error}</p>}
+          <Input
+            type="number"
+            placeholder="Cost"
+            value={familyCost}
+            onChange={(e) => setFamilyCost(parseFloat(e.target.value))}
           />
           {error && <p className="text-red-500">{error}</p>}
           <DialogFooter>

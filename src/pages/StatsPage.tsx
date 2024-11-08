@@ -45,6 +45,7 @@ const StatsPage = () => {
 
   const todayStr = yyyy + "-" + mm + "-" + dd;
 
+ 
   const fetchData = () => {
     // daily profit
     fetch("http://localhost:8000/commandes")
@@ -161,7 +162,7 @@ const StatsPage = () => {
           value={dayClients}
           icon={<Users className="w-6 h-6 text-blue-500" />}
         />
-        <div onClick={fetchMonthlyReport} className="hover:cursor-pointer">
+        <div onClick={fetchMonthlyReport} className="hover:cursor-pointer" >
           <StatCard
             title="Monthly Profit"
             value={`${monthProfit}DA`}

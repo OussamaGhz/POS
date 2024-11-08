@@ -15,15 +15,21 @@ router.get("/families", (req, res) => {
 });
 
 router.post("/families", (req, res) => {
-  const { name } = req.body;
-  db.run("INSERT INTO families (name) VALUES (?)", [name], function (err) {
-    if (err) {
-      console.error("Failed to create family:", err);
-      res.status(500).json({ error: "Failed to create family" });
-    } else {
-      res.status(201).json({ id: this.lastID, name });
+  const { name, cost } = req.body;
+  db.run(
+    "INSERT INTO families (name, cost) VALUES (?, ?)",
+    [name, cost],
+    function (err) {
+      console.log(name, cost);
+
+      if (err) {
+        console.error("Failed to create family:", err);
+        res.status(500).json({ error: "Failed to create family" });
+      } else {
+        res.status(201).json({ id: this.lastID, name, cost });
+      }
     }
-  });
+  );
 });
 
 router.delete("/families/:id", (req, res) => {

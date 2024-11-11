@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { db } from "../database";
+import multer from "multer";
 
 const router = Router();
+const upload = multer({ storage: multer.memoryStorage() });
+
 
 router.get("/families", (req, res) => {
   db.all("SELECT * FROM families", [], (err, rows) => {
@@ -14,8 +17,10 @@ router.get("/families", (req, res) => {
   });
 });
 
-router.post("/families", (req, res) => {
+router.post("/families", (req: any, res) => {
   const { name, cost } = req.body;
+  const icon = req.file ? req.file.buffer : null;
+
   db.run(
     "INSERT INTO families (name, cost) VALUES (?, ?)",
     [name, cost],

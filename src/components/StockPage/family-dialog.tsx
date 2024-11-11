@@ -41,6 +41,7 @@ const AddFamilyDialog: React.FC<props> = ({
   const [familyCost, setFamilyCost] = useState<number | "">("");
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [familyToDelete, setFamilyToDelete] = useState<number | null>(null);
+  const [familyIcon, setFamilyIcon] = useState<File | null>(null); // New state for icon file
 
   useEffect(() => {
     fetchFamilies();
@@ -63,20 +64,23 @@ const AddFamilyDialog: React.FC<props> = ({
       return;
     }
 
+    const formData = new FormData();
+    formData.append("name", familyName);
+    formData.append("cost", familyCost.toString());
+    if (familyIcon) formData.append("icon", familyIcon);    
+
     fetch("http://localhost:8000/families", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: familyName, cost: familyCost }),
+      body: formData,
     })
       .then((res) => {
         if (res.ok) {
           fetchFamilies();
           setFamilyName("");
           setFamilyCost("");
+          setFamilyIcon(null);
           setError(null);
-          onFamilyUpdated(); // Call the callback to update the families list
+          onFamilyUpdated();
         } else {
           console.error("Failed to add family:", res);
         }
@@ -110,6 +114,12 @@ const AddFamilyDialog: React.FC<props> = ({
         setIsConfirmationOpen(false);
         setFamilyToDelete(null);
       });
+  };
+
+  const handleIconChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setFamilyIcon(event.target.files[0]);
+    }
   };
 
   const handleKeyDown = useCallback(
@@ -179,6 +189,11 @@ const AddFamilyDialog: React.FC<props> = ({
             onChange={(e) => setFamilyCost(parseFloat(e.target.value))}
           />
           {error && <p className="text-red-500">{error}</p>}
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={handleIconChange} // File input for icon
+          />
           <DialogFooter>
             <DialogClose asChild>
               <Button

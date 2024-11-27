@@ -15,6 +15,7 @@ type Product = {
   family: string;
   quantity: number;
   total: number;
+  family_cost: number;
   selling_price: number;
 };
 
@@ -26,7 +27,7 @@ const ProductSearch = () => {
   const [alertDescription, setAlertDescription] = useState("");
   const dispatch = useDispatch();
   const [products, setProducts] = useState([]);
-  
+
   useEffect(() => {
     fetch("http://localhost:8000/products")
       .then((response) => response.json())
@@ -58,6 +59,7 @@ const ProductSearch = () => {
         ...product,
         amount: 1,
         total: product.selling_price,
+        family_cost: product.family_cost,
       })
     );
   };

@@ -5,7 +5,6 @@ import multer from "multer";
 const router = Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-
 router.get("/families", (req, res) => {
   db.all("SELECT * FROM families", [], (err, rows) => {
     if (err) {
@@ -17,7 +16,7 @@ router.get("/families", (req, res) => {
   });
 });
 
-router.post("/families", (req: any, res) => {
+router.post("/families", upload.single("icon"), (req: any, res) => {
   const { name, cost } = req.body;
   const icon = req.file ? req.file.buffer : null;
 
@@ -25,7 +24,7 @@ router.post("/families", (req: any, res) => {
     "INSERT INTO families (name, cost) VALUES (?, ?)",
     [name, cost],
     function (err) {
-      console.log(name, cost);
+      console.log(name, cost, icon);
 
       if (err) {
         console.error("Failed to create family:", err);

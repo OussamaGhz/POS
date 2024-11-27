@@ -13,11 +13,11 @@ import Total from "./total";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 import { CalculatorDialog } from "./calculator";
+import { print } from "../../lib/print";
 
 const Commandes = () => {
   const products = useSelector((state: RootState) => state.cart.products);
   console.log(products);
-  
 
   const validOrder = () => {
     // get total price
@@ -27,6 +27,8 @@ const Commandes = () => {
     );
 
     // fetch POST /commandes
+    console.log("Commande validée:", total_price, products);
+
     fetch("http://localhost:8000/commandes", {
       method: "POST",
       headers: {
@@ -42,12 +44,17 @@ const Commandes = () => {
       })
       .then((data) => {
         console.log("Commande created:", data);
+        // Call the print function with essential information
+        const transactionId = data.id;
+        const date = new Date().toLocaleDateString();
+        const time = new Date().toLocaleTimeString();
+        print(transactionId, date, time, products, total_price);
       })
       .catch((error) => {
         console.error("Failed to create commande:", error);
       });
 
-    window.location.reload();
+    // window.location.reload();
   };
 
   if (products.length === 0) {

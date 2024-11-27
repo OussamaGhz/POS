@@ -2,7 +2,6 @@
 CREATE TABLE families (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     cost REAL NOT NULL
-    icon blob 
 );
 
 -- Table for products

@@ -20,6 +20,7 @@ import {
 } from "./ui/table";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { information } from "../lib/infomations";
 
 type Transaction = {
   id: number;
@@ -63,10 +64,10 @@ export function DetailDialogPrint({
     });
 
     // Placeholder shop information
-    const shopName = "Gelato Bak";
-    const shopAddressLine1 = "Address Line 1";
-    const shopAddressLine2 = "Address Line 2";
-    const shopPhone = "Phone Number";
+    const shopName = information.shop_name;
+    const shopAddressLine1 = information.shop_address_line1;
+    const shopAddressLine2 = information.shop_address_line2;
+    const shopPhone = information.phone_number;
 
     // Shop Header Section (center aligned)
     doc.setFontSize(10);
@@ -152,8 +153,7 @@ export function DetailDialogPrint({
     // Footer Section (center aligned and reduced space)
     const footerY = totalAmountY + 8;
     doc.setFontSize(8);
-    doc.text("Thank you for your purchase!", 40, footerY, { align: "center" });
-    doc.text("Have a Nice Day!", 40, footerY + 4, { align: "center" });
+    doc.text(information.thanks_message, 40, footerY, { align: "center" });
 
     // Create a Blob from the PDF data
     const pdfBlob = doc.output('blob');

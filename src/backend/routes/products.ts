@@ -5,7 +5,7 @@ const router = Router();
 
 router.get("/products", (req, res) => {
   db.all(
-    "SELECT products.id,products.name,families.name AS family_name, families.cost AS family_cost,products.amount,products.unit,products.cost_price,products.selling_price FROM products LEFT JOIN families ON products.family_id = families.id;",
+    "SELECT products.id,products.name,families.name AS family_name, families.cost AS family_cost, products.amount,products.unit,products.cost_price,products.selling_price FROM products LEFT JOIN families ON products.family_id = families.id;",
     [],
     (err, rows) => {
       if (err) {

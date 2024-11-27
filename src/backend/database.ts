@@ -25,7 +25,6 @@ const createTables = () => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       cost REAL NOT NULL
-      icon blob 
     )`,
     `CREATE TABLE IF NOT EXISTS products (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
